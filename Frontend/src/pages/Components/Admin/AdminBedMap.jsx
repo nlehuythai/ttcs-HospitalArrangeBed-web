@@ -18,8 +18,7 @@ const AdminBedMap = () => {
     const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    const userData = JSON.parse(sessionStorage.getItem('user'));
-    const userId = userData ? userData.id : null;
+    const token = sessionStorage.getItem('token');
     const fetchData = async () => {
         try {
             const res = await fetch('http://localhost:5000/api/admin/totalbeds');
@@ -45,10 +44,7 @@ const AdminBedMap = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/admin/delete-bed/${id}`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    admin_id: userId
-                })
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             });
             if (response.ok) {
                 alert("Xóa giường thành công!");
@@ -86,7 +82,7 @@ const AdminBedMap = () => {
             <div className="flex flex-col md:flex-row justify-between items-center gap-6 bg-white/80 backdrop-blur-md p-6 rounded-[2.5rem] shadow-xl shadow-slate-200/60 border border-white sticky top-0 z-30 mb-8">
                 <div className="flex items-center gap-4 w-full md:w-auto relative">
                     {/* Icon hiển thị bên trái */}
-                    <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-600 shadow-sm shadow-indigo-100">
+                    <div className="p-3 bg-teal-50 rounded-2xl text-teal-500 shadow-sm shadow-indigo-100">
                         <MdMeetingRoom size={24} />
                     </div>
 
@@ -98,12 +94,12 @@ const AdminBedMap = () => {
                             onClick={() => setIsOpen(!isOpen)}
                             className="flex items-center gap-2 cursor-pointer group transition-all"
                         >
-                            <span className="text-lg font-black text-slate-800 group-hover:text-indigo-600 transition-colors">
+                            <span className="text-lg font-black text-slate-800 group-hover:text-teal-500 transition-colors">
                                 {selectedKhoa || "Tất cả khoa"}
                             </span>
                             <MdExpandMore
                                 size={22}
-                                className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-indigo-500' : ''}`}
+                                className={`text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-teal-500' : ''}`}
                             />
                         </div>
 
@@ -111,10 +107,10 @@ const AdminBedMap = () => {
                             <>
                                 <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
                                 <div className="absolute top-full left-0 mt-4 w-72 bg-white rounded-[2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
-                                    <div className="p-2 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent hover:scrollbar-thumb-indigo-200">
+                                    <div className="p-2 max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent hover:scrollbar-thumb-teal-200">
                                         <button
                                             onClick={() => { setSelectedKhoa("Tất cả khoa"); setIsOpen(false); }}
-                                            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all ${selectedKhoa === "Tất cả khoa" ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50'
+                                            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all ${selectedKhoa === "Tất cả khoa" ? 'bg-teal-50 text-teal-600' : 'text-slate-600 hover:bg-slate-50'
                                                 }`}
                                         >
                                             Tất cả khoa
@@ -127,7 +123,7 @@ const AdminBedMap = () => {
                                             <button
                                                 key={k.id}
                                                 onClick={() => { setSelectedKhoa(k.ten_khoa); setIsOpen(false); }}
-                                                className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all mb-1 ${selectedKhoa === k.ten_khoa ? 'bg-indigo-50 text-indigo-600' : 'text-slate-600 hover:bg-slate-50'
+                                                className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl text-sm font-bold transition-all mb-1 ${selectedKhoa === k.ten_khoa ? 'bg-teal-50 text-teal-600' : 'text-slate-600 hover:bg-slate-50'
                                                     }`}
                                             >
                                                 {k.ten_khoa}
@@ -143,7 +139,7 @@ const AdminBedMap = () => {
 
                 <button
                     onClick={hanadleOpenAddBed}
-                    className="group relative flex items-center gap-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black transition-all duration-300 shadow-2xl shadow-indigo-200 active:scale-95 overflow-hidden"
+                    className="group relative flex items-center gap-3 px-8 py-4 bg-teal-500 hover:bg-teal-700 text-slate-100 rounded-2xl text-sm font-black transition-all duration-300 shadow-2xl shadow-indigo-200 active:scale-95 overflow-hidden"
                 >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     <span className="text-xl">+</span>

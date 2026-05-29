@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-
+const jwt = require('jsonwebtoken');
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -25,10 +25,26 @@ const login = async (req, res) => {
         );
 
         if (userQuery.rows.length > 0) {
+            const userData = userQuery.rows[0];
+            const payload = {
+                id: userData.id,
+                username: userData.username,
+                role: userData.role,
+                khoa_id: userData.khoa_id
+            };
+
+            const token = jwt.sign(
+                payload,
+                'HospitalT&Ntoken',
+                { expiresIn: '1d' }
+            );
             res.json({
                 success: true,
+                message: 'Đăng nhập thành công',
+                token: token,
                 user: userQuery.rows[0]
             });
+
         } else {
             res.status(401).json({
                 success: false,

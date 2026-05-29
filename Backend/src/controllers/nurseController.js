@@ -1,6 +1,7 @@
 const pool = require('../config/db');
 
 const waitingList = async (req, res) => {
+    const y_ta_id = req.user.id;
     try {
         const list = await pool.query(
             `SELECT h.id as hoso_id, b.ho_ten, b.nam_sinh, k.ten_khoa, h.chan_doan_ban_dau, u.fullname as bac_si_chi_dinh
@@ -8,7 +9,7 @@ const waitingList = async (req, res) => {
              JOIN BenhNhan b ON h.benh_nhan_id = b.id
              JOIN Khoa k ON h.khoa_id = k.id
              JOIN users u ON h.bac_si_id = u.id
-             WHERE h.trang_thai_ho_so = 'Chờ xếp giường'`
+             WHERE h.trang_thai_ho_so = 'Chờ xếp giường' AND h.y_ta_id=$1`, [y_ta_id]
         );
         res.json(list.rows);
     } catch (err) {
@@ -16,7 +17,8 @@ const waitingList = async (req, res) => {
     }
 };
 const assignBed = async (req, res) => {
-    const { hoso_id, giuong_id, y_ta_id } = req.body;
+    const { hoso_id, giuong_id } = req.body;
+    const y_ta_id = req.user.id
     const client = await pool.connect();
     if (!hoso_id || !giuong_id || !y_ta_id) {
         return res.status(400).json({
@@ -85,8 +87,12 @@ const getnurseInfo = async (req, res) => {
 };
 
 const getOverviewStats = async (req, res) => {
-    const { khoa_id } = req.query;
+    const khoa_id = req.user.khoa_id;
     try {
+        const khoaResult = await pool.query(
+            'SELECT ten_khoa FROM Khoa WHERE id = $1',
+            [khoa_id]
+        );
         const totalPatients = await pool.query("SELECT COUNT(*) FROM HoSoNhapVien WHERE trang_thai_ho_So!='Đã xuất viện' AND khoa_id = $1", [khoa_id]);
         const inTreatment = await pool.query("SELECT COUNT(*) FROM HoSoNhapVien WHERE trang_thai_ho_so = 'Đang điều trị' AND khoa_id = $1", [khoa_id]);
         const waiting = await pool.query("SELECT COUNT(*) FROM HoSoNhapVien WHERE trang_thai_ho_so = 'Chờ xếp giường' AND khoa_id = $1", [khoa_id]);
@@ -115,9 +121,10 @@ const getOverviewStats = async (req, res) => {
         const occupiedB = parseInt(occupiedBeds.rows[0].count) || 0;
         const cleanB = parseInt(cleanBeds.rows[0].count) || 0;
         const emptyB = totalB - occupiedB - cleanB;
-
+        const ten_khoa = khoaResult.rows[0]?.ten_khoa || "Khoa của bạn";
         // 3. Trả về JSON đúng cấu trúc Frontend cần
         res.json({
+            ten_khoa: ten_khoa,
             patients: {
                 total: totalP,
                 inTreatment: treatmentP,
@@ -141,13 +148,23 @@ const getOverviewStats = async (req, res) => {
     }
 };
 const getPendingActions = async (req, res) => {
-    const { nurse_id } = req.params;
+    const nurse_id = req.user.id;
     try {
         const pendingActions = await pool.query(
-            `SELECT Count(*) as total_pending
-             FROM hosonhapvien h
-             JOIN users u ON h.y_ta_id = u.id
-             WHERE h.trang_thai_ho_so IN ('Chờ xếp giường', 'Chờ xuất viện') AND h.y_ta_id = $1`,
+            `SELECT COUNT(*) as total_pending
+            FROM (
+                SELECT h.id 
+                FROM hosonhapvien h
+                WHERE h.trang_thai_ho_so IN ('Chờ xếp giường', 'Chờ xuất viện') 
+                AND h.y_ta_id = $1
+
+            UNION ALL 
+    
+            SELECT y.id 
+            FROM ylenh y
+            WHERE y.trang_thai = 'Chờ thực hiện' 
+            AND y.y_ta_id = $1
+) as todo_list ;`,
             [nurse_id]
         );
         res.json(parseInt(pendingActions.rows[0].total_pending));
@@ -156,7 +173,7 @@ const getPendingActions = async (req, res) => {
     }
 };
 const getNurseTasks = async (req, res) => {
-    const { y_ta_id } = req.query;
+    const y_ta_id = req.user.id;
     if (!y_ta_id) {
         return res.status(400).json({
             message: "Thiếu thông tin: Mã y tá!"

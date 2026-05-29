@@ -18,6 +18,7 @@ const getAllUsers = async (req, res) => {
                 u.ma_nhan_vien
             FROM users u
             LEFT JOIN khoa k ON u.khoa_id = k.id 
+            WHERE u.status !='Khóa' AND u.role!='Admin'
             ORDER BY u.id DESC
         `
         );
@@ -81,7 +82,7 @@ const deleteUser = async (req, res) => {
         return res.status(400).json({ message: "Thiếu ID người dùng" });
     }
     try {
-        const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [userId]);
+        const result = await pool.query(`UPDATE users SET status ='Khóa' WHERE id = $1`, [userId]);
         res.json({ success: true, message: 'Người dùng đã được xóa', user: result.rows[0] });
     } catch (err) {
         console.error("Lỗi DELETE:", err.message);

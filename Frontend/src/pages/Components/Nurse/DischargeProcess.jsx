@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdCheckCircle, MdInfoOutline, MdOutlineCheckBoxOutlineBlank, MdPrint, MdAssignmentInd } from "react-icons/md";
 import { format } from 'date-fns';
+import ExportDischargeDocx from "./handleButton/ExportDischargeDocx";
 const DischargeProcess = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [patients, setPatients] = useState([]);
@@ -22,16 +23,16 @@ const DischargeProcess = () => {
     ];
     const fetchPatients = async () => {
         try {
-            const userSession = sessionStorage.getItem("user")
             setLoading(true);
 
-            const userData = JSON.parse(userSession);
-            const nurseId = userData.id;
+            const token = sessionStorage.getItem('token');
 
-            const res = await fetch(`http://localhost:5000/api/patients/waiting-discharge?y_ta_id=${nurseId}`, {
+
+            const res = await fetch(`http://localhost:5000/api/patients/waiting-discharge`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
+                    'Authorization': `Bearer ${token}`
                 }
 
             });
@@ -59,8 +60,6 @@ const DischargeProcess = () => {
     };
     const checkedCount = Object.values(checklist).filter(Boolean).length;
     const isAllChecked = checkedCount === checklistOptions.length;
-    const userData = JSON.parse(sessionStorage.getItem('user'));
-    const nurseId = userData ? userData.id : null;
     const handleFinalConfirm = async () => {
         if (!isAllChecked) return;
         const token = sessionStorage.getItem('token');
@@ -70,8 +69,7 @@ const DischargeProcess = () => {
                 headers: {
                     "Content-Type": "application/json",
                     'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ nurseId: nurseId })
+                }
 
             });
 
@@ -100,32 +98,32 @@ const DischargeProcess = () => {
             alert("Lỗi khi cập nhật: " + err.message);
         }
     };
+    const handleExportDocx = (patientInfo) => {
+        if (!patientInfo) {
+            alert("Không tìm thấy thông tin bệnh nhân!");
+            return;
+        }
 
+        try {
+            // Gọi hàm xuất file Word hoàn chỉnh đã viết ở bước trước
+            ExportDischargeDocx(patientInfo);
+        } catch (error) {
+            console.error("Lỗi khi xuất file Word:", error);
+            alert("Có lỗi xảy ra trong quá trình khởi tạo file Word.");
+        }
+    };
     return (
-        <div className="h-screen flex flex-col bg-slate-50 overflow-hidden">
-            {/* HEADER - Cố định phía trên */}
-            <header className="p-6 bg-white border-b border-slate-200 shrink-0 mx-6 mt-6 rounded-[1.5rem] shadow-sm">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 bg-sky-100 rounded-lg">
-                        <MdAssignmentInd className="text-2xl text-sky-600" />
-                    </div>
-                    <div>
-                        <h1 className="text-xl font-black text-slate-800 tracking-tight">Quản lý xuất viện</h1>
-                        <p className="text-slate-500 text-xs font-medium">Kiểm tra y lệnh và xác nhận giải phóng giường Bệnh nhân chờ xuất viện</p>
-                    </div>
-                </div>
-            </header>
+        <div className="h-screen flex flex-col overflow-hidden">
 
-            {/* MAIN CONTENT AREA - Chia làm 2 cột */}
+
             <div className="flex flex-1 overflow-hidden p-6 gap-6">
 
-                {/* LEFT COLUMN: Danh sách bệnh nhân (Master) */}
                 <aside className="w-1/3 max-w-[400px] flex flex-col">
                     <div className="flex items-center justify-between mb-4 px-1">
                         <h3 className="font-extrabold text-slate-900 text-lg tracking-tight">
                             Bệnh nhân chờ xuất viện
                         </h3>
-                        <span className="bg-sky-500 text-white text-xs font-black px-2.5 py-1 rounded-full">
+                        <span className="bg-teal-500 text-white text-xs font-black px-2.5 py-1 rounded-full">
                             {patients.length}
                         </span>
                     </div>
@@ -140,28 +138,28 @@ const DischargeProcess = () => {
                                     key={p.id}
                                     onClick={() => setSelectedPatient(selectedPatient === p ? null : p)}
                                     className={`p-4 rounded-2xl border cursor-pointer transition-all ${selectedPatient?.id === p.id
-                                        ? "bg-sky-50 border-sky-200 shadow-md"
-                                        : "bg-white border-slate-100 hover:border-sky-100"
+                                        ? "bg-teal-400 border-teal-200 shadow-md text-slate-100"
+                                        : "bg-white border-slate-100 hover:border-sky-100 text_slate-900"
                                         }`}
                                 >
-                                    <div className="flex justify-between items-start">
+                                    <div className="flex justify-between items-start" >
                                         <div>
-                                            <h3 className="font-bold text-slate-800">{p.ho_ten}</h3>
-                                            <p className="text-xs text-slate-500 mt-1">
+                                            <h3 className="font-bold">{p.ho_ten}</h3>
+                                            <p className="text-xs mt-1">
                                                 {new Date(p.nam_sinh).toLocaleDateString('vi-VN')} - {p.gioi_tinh}
                                             </p>
                                         </div>
-                                        <span className={`text-[10px] px-2 py-1 rounded-lg font-bold ${selectedPatient?.id === p.id ? "bg-sky-500 text-white" : "bg-slate-100 text-slate-500"
+                                        <span className={`text-[10px] px-2 py-1 rounded-lg font-bold ${selectedPatient?.id === p.id ? "bg-teal-500 text-white" : "bg-slate-100 text-slate-500"
                                             }`}>
                                             {p.ma_giuong}
                                         </span>
                                     </div>
                                     <div className="mt-3 pt-3 border-t border-slate-50 flex justify-between items-end">
                                         <div>
-                                            <p className="text-[10px] text-slate-400 uppercase font-semibold">Bác sĩ ra lệnh</p>
-                                            <p className="text-xs font-medium text-slate-700">{p.fullname}</p>
+                                            <p className="text-[10px] uppercase font-semibold text-slate-500">Bác sĩ ra lệnh</p>
+                                            <p className="text-xs font-medium ">{p.fullname}</p>
                                         </div>
-                                        <p className="text-[10px] italic text-slate-400">{p.ngay_ra_lenh}</p>
+                                        <p className="text-[10px] italic text-slate-500">{p.ngay_ra_lenh}</p>
                                     </div>
                                 </div>
                             ))
@@ -173,7 +171,7 @@ const DischargeProcess = () => {
                 <main className="flex-1 flex flex-col min-w-0">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                            <span className="w-2 h-8 bg-blue-600 rounded-full"></span>
+                            <span className="w-2 h-8 bg-teal-500 rounded-full"></span>
                             Chi tiết hồ sơ
                         </h2>
                         {selectedPatient && (
@@ -207,7 +205,7 @@ const DischargeProcess = () => {
 
                                             <div className="text-right space-y-1">
                                                 <label className="text-[10px] font-bold text-slate-400 uppercase">Mã giường</label>
-                                                <p className="text-xl font-black text-blue-600">{selectedPatient.ma_giuong}</p>
+                                                <p className="text-xl font-black text-teal-500">{selectedPatient.ma_giuong}</p>
                                             </div>
 
                                             <div className="space-y-1">
@@ -251,12 +249,12 @@ const DischargeProcess = () => {
                                                     key={item.id}
                                                     onClick={() => toggleCheck(item.id)}
                                                     className={`group flex items-center justify-between p-5 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${checklist[item.id]
-                                                        ? "bg-green-50/50 border-green-200"
-                                                        : "bg-white border-slate-50 hover:border-blue-100 hover:shadow-md"
+                                                        ? "bg-teal-50/50 border-teal-200"
+                                                        : "bg-white border-slate-50 hover:border-teal-100 hover:shadow-md"
                                                         }`}
                                                 >
                                                     <div className="flex items-center gap-4">
-                                                        <div className={`text-2xl transition-transform duration-300 ${checklist[item.id] ? "scale-110 text-green-600" : "text-slate-300 group-hover:text-blue-400"}`}>
+                                                        <div className={`text-2xl transition-transform duration-300 ${checklist[item.id] ? "scale-110 text-green-600" : "text-slate-300 group-hover:text-teal-400"}`}>
                                                             {checklist[item.id] ? <MdCheckCircle /> : <MdOutlineCheckBoxOutlineBlank />}
                                                         </div>
                                                         <span className={`text-sm font-bold transition-colors ${checklist[item.id] ? "text-green-800" : "text-slate-600"}`}>
@@ -272,15 +270,18 @@ const DischargeProcess = () => {
                                         </div>
                                     </section>
                                     <footer className="pt-6 border-t border-slate-100 flex gap-4">
-                                        <button className="flex-1 flex items-center justify-center gap-2 py-4 border border-slate-200 rounded-2xl text-slate-600 hover:bg-slate-50 font-bold transition-all">
-                                            <MdPrint /> In phiếu
+                                        <button disabled={!isAllChecked} onClick={() => handleExportDocx(selectedPatient)} className={`flex-1 flex items-center justify-center gap-2 py-4 border border-slate-200 rounded-2xl font-bold transition-all  ${isAllChecked
+                                            ? "bg-white text-slate-900 hover:bg-slate-200 shadow-teal-100 active:scale-95"
+                                            : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                            }`}>
+                                            <MdPrint />{isAllChecked ? "In phiếu xuất viện" : "Chưa đủ điều kiện in"}
                                         </button>
                                         <button
                                             onClick={handleFinalConfirm}
                                             disabled={!isAllChecked}
                                             className={`flex-[2] py-4 rounded-2xl font-black transition-all shadow-lg shadow-transparent ${isAllChecked
-                                                    ? "bg-green-600 text-white hover:bg-green-700 shadow-green-100 active:scale-95"
-                                                    : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                                ? "bg-teal-500 text-white hover:bg-teal-600 shadow-teal-100 active:scale-95"
+                                                : "bg-slate-100 text-slate-400 cursor-not-allowed"
                                                 }`}
                                         >
                                             {isAllChecked ? "XÁC NHẬN HOÀN TẤT" : `CÒN ${checklistOptions.length - checkedCount} MỤC CHƯA XONG`}

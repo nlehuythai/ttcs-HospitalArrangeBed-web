@@ -1,9 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
 const EditBedModal = ({ isOpen, onClose, selectedBed, newStatus, setNewStatus, onRefresh }) => {
-    const userData = JSON.parse(sessionStorage.getItem('user'));
-    const userId = userData ? userData.id : null;
     const [loading, setLoading] = useState(false);
+    const token = sessionStorage.getItem('token');
     const handleUpdateBed = async () => {
         if (newStatus === selectedBed.trang_thai) {
             onClose();
@@ -13,10 +12,9 @@ const EditBedModal = ({ isOpen, onClose, selectedBed, newStatus, setNewStatus, o
         try {
             const response = await fetch(`http://localhost:5000/api/admin/managebeds/${selectedBed.id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
                     trang_thai: newStatus,
-                    admin_id: userId
                 })
             });
 

@@ -124,7 +124,7 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
                         {/* Phần 1: Thông tin cá nhân */}
                         <section>
                             <div className="flex items-center gap-2 mb-6">
-                                <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
+                                <div className="p-2 bg-teal-50 rounded-lg text-teal-600">
                                     <MdPerson className="text-xl" />
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-800 tracking-tight">Thông tin cá nhân</h3>
@@ -263,7 +263,7 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
                     <button
                         type="submit"
                         onClick={handleConfirm}
-                        className="px-10 py-2.5 rounded-xl bg-indigo-600 text-white font-bold hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 flex items-center gap-2"
+                        className="px-10 py-2.5 rounded-xl bg-teal-500 text-white font-bold hover:bg-teal-600 transition-all shadow-lg shadow-indigo-200 active:scale-95 flex items-center gap-2"
                     >
                         <span>Xác nhận nhập viện</span>
                     </button>

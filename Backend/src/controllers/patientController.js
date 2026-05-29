@@ -2,8 +2,7 @@ const pool = require('../config/db');
 
 const getPatientRecords = async (req, res) => {
     try {
-        console.log("Query parameters:", req.query); // Debug: Kiểm tra query parameters
-        const { y_ta_id } = req.query;
+        const y_ta_id = req.user.id;
         const query = `
             SELECT h.id, b.ho_ten, b.nam_sinh, b.gioi_tinh, k.ten_khoa, 
                    g.ma_giuong, p.ten_phong, u.fullname as bac_si, 
@@ -28,10 +27,10 @@ const getPatientRecords = async (req, res) => {
     }
 };
 const getInpatient = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user.id;
     try {
         const result = await pool.query(`
-            SELECT 
+            SELECT
                 bn.id as benh_nhan_id, 
                 bn.ho_ten, 
                 bn.nam_sinh, 
@@ -58,7 +57,9 @@ const getInpatient = async (req, res) => {
             LEFT JOIN Giuong g ON hs.giuong_id = g.id
             LEFT JOIN Phong p ON g.phong_id = p.id
             LEFT JOIN users nv ON hs.bac_si_id = nv.id
-            LEFT JOIN DIENBIENBENH db ON db.ho_so_id = hs.id
+            LEFT JOIN DIENBIENBENH db ON db.ho_so_id = hs.id AND db.id = (
+                SELECT MAX(id) FROM DIENBIENBENH WHERE ho_so_id = hs.id
+            )
             WHERE hs.trang_thai_ho_so = 'Đang điều trị' AND hs.bac_si_id = $1
             ORDER BY hs.thoi_gian_nhap_vien DESC
         `, [userId]);
@@ -93,7 +94,7 @@ const dischargeOrder = async (req, res) => {
     }
 };
 const getWaitingDischarge = async (req, res) => {
-    const nurseId = req.query.y_ta_id;
+    const nurseId = req.user.id;
     try {
         const query = `
             SELECT 
@@ -125,7 +126,7 @@ const getWaitingDischarge = async (req, res) => {
 };
 const completeDischarge = async (req, res) => {
     const { id } = req.params;
-    const { nurseId } = req.body;
+    const nurseId = req.user.id;
     const client = await pool.connect();
     try {
         await client.query('BEGIN');

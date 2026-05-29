@@ -44,7 +44,8 @@ const getReports = async (req, res) => {
 };
 const updateStatusBed = async (req, res) => {
     const bedId = req.params.id;
-    const { trang_thai, admin_id } = req.body;
+    const { trang_thai } = req.body;
+    const admin_id = req.user.id;
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
@@ -105,8 +106,8 @@ const getBedHistory = async (req, res) => {
                 FROM lich_su_giuong lsg
                 JOIN GIUONG g ON lsg.giuong_id = g.id
                 join users u on lsg.nhan_vien_thuc_hien_id = u.id
-                where g.id = $1
-                ORDER BY lsg.thoi_gian 
+                where g.id = $1 AND lsg.thoi_gian >= NOW() - INTERVAL '7 days'
+                ORDER BY lsg.thoi_gian DESC;
         `;
         const result = await pool.query(query, [bedId]);
         res.json(result.rows);
@@ -122,7 +123,7 @@ const getTotalBeds = async (req, res) => {
             FROM giuong g
             JOIN phong p ON g.phong_id = p.id
             JOIN khoa k ON p.khoa_id = k.id
-            LEFT JOIN HoSoNhapVien h on h.giuong_id=g.id and h.trang_thai_ho_so='Đang điều trị'
+            LEFT JOIN HoSoNhapVien h on h.giuong_id=g.id and h.trang_thai_ho_so IN ('Đang điều trị', 'Chờ xuất viện')
             LEFT JOIN BenhNhan b on b.id=h.benh_nhan_id 
             LEFT JOIN Users u on u.id=h.bac_si_id
             WHERE g.is_deleted = false
@@ -134,7 +135,7 @@ const getTotalBeds = async (req, res) => {
 };
 const deleteBed = async (req, res) => {
     const bedId = req.params.id;
-    const { admin_id } = req.body;
+    const admin_id = req.user.id;
     const client = await pool.connect();
     try {
         await client.query('BEGIN');

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const doctorController = require('../controllers/doctorController')
-
-router.post('/add-order', doctorController.addOrderEntry)
-router.get('/history-order/:userId', doctorController.getHistoryOrder)
+const verifyToken = require('../Middleware/authMiddleware');
+router.post('/add-order', verifyToken, doctorController.addOrderEntry)
+router.get('/history-order', verifyToken, doctorController.getHistoryOrder)
 module.exports = router

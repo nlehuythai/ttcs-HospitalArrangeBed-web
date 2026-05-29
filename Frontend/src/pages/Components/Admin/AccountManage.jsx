@@ -11,7 +11,6 @@ const AccountManagement = () => {
     const [newUser, setNewUser] = useState({
         fullname: '',
         username: '',
-        password: '',
         role: 'Bác sĩ',
         ten_khoa: '',
         status: 'Hoạt động',
@@ -44,15 +43,15 @@ const AccountManagement = () => {
             const response = await fetch('http://localhost:5000/api/users/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(newUser) // userData là đối tượng chứa thông tin tài khoản mới),
+                body: JSON.stringify(newUser)
             });
 
             const data = await response.json();
 
             if (data.success) {
                 alert('Thêm tài khoản thành công!');
-                // Bạn có thể reload trang hoặc gọi lại hàm fetch danh sách để cập nhật bảng
-                setNewUser({ // Reset form về trống
+
+                setNewUser({
                     fullname: '', username: '', password: '', role: 'Bác sĩ',
                     ten_khoa: '', status: 'Hoạt động', email_personal: '', phone: ''
                 });
@@ -69,7 +68,7 @@ const AccountManagement = () => {
         if (window.confirm("Bạn có chắc chắn muốn xóa tài khoản này?")) {
             try {
                 const response = await fetch(`http://localhost:5000/api/users/delete/${userId}`, {
-                    method: 'DELETE',
+                    method: 'PATCH',
                 });
                 const data = await response.json();
                 if (data.success) {
@@ -86,17 +85,17 @@ const AccountManagement = () => {
     };
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-xl shadow-slate-200/50">
+            <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md sticky top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6">
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-                        <div className="w-2 h-8 bg-indigo-600 rounded-full" />
-                        Quản lý Nhân sự <span className="text-indigo-500">({users.length})</span>
+                        <div className="w-2 h-8 bg-teal-500 rounded-full" />
+                        Quản lý Nhân sự <span className="text-teal-500">({users.length})</span>
                     </h2>
                     <p className="text-slate-500 font-medium ml-5">Hệ thống phân quyền và điều phối chuyên khoa</p>
                 </div>
                 <button
                     onClick={() => setShowAddForm(!showAddForm)}
-                    className="group flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-black transition-all shadow-lg shadow-indigo-200 active:scale-95"
+                    className="group flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-slate-100 px-6 py-3.5 rounded-2xl font-black transition-all shadow-lg shadow-indigo-200 active:scale-95"
                 >
                     <MdPersonAdd size={22} className="group-hover:rotate-12 transition-transform" />
                     THÊM TÀI KHOẢN
@@ -106,7 +105,7 @@ const AccountManagement = () => {
             {/* Form thêm mới */}
             {showAddForm && (
                 <form onSubmit={handleAddUser} className="bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm space-y-6">
-                    <h3 className="font-bold text-slate-800 border-l-4 border-slate-900 pl-3">Thêm Tài khoản Mới</h3>
+                    <h3 className="font-bold text-teal-500 border-l-4 border-teal-500 pl-3">Thêm Tài khoản Mới</h3>
                     <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Họ tên</label>
@@ -141,7 +140,6 @@ const AccountManagement = () => {
                             <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Trạng thái</label>
                             <select value={newUser.status} onChange={(e) => setNewUser({ ...newUser, status: e.target.value })} className="w-full bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 focus:outline-none">
                                 <option>Hoạt động</option>
-                                <option>Khóa</option>
                             </select>
                         </div>
                         <div className="space-y-2 ">
@@ -154,8 +152,8 @@ const AccountManagement = () => {
                         </div>
                     </div>
                     <div className="flex gap-3 space-y-2 ">
-                        <button type="submit" className="bg-slate-900 text-white px-8 py-2.5 rounded-xl font-bold">Thêm mới</button>
-                        <button onClick={() => setShowAddForm(false)} className="bg-slate-100 text-slate-600 px-8 py-2.5 rounded-xl font-bold">Hủy</button>
+                        <button type="submit" className="bg-teal-500 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-teal-600">Thêm mới</button>
+                        <button onClick={() => setShowAddForm(false)} className="bg-slate-100 text-slate-600 hover:bg-slate-200 px-8 py-2.5 rounded-xl font-bold">Hủy</button>
                     </div>
                 </form>
             )}
@@ -167,7 +165,6 @@ const AccountManagement = () => {
                         <tr className="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-400 font-bold">
                             <th className="px-6 py-4">Họ tên</th>
                             <th className="px-6 py-4">Tài khoản</th>
-                            <th className="px-6 py-4">Mật khẩu</th>
                             <th className="px-6 py-4">Vai trò</th>
                             <th className="px-6 py-4">Chuyên khoa</th>
                             <th className="px-6 py-4">Trạng thái</th>
@@ -181,7 +178,6 @@ const AccountManagement = () => {
                             <tr key={user.id} className="hover:bg-slate-50 transition-colors">
                                 <td className="px-6 py-4 text-slate-900 font-bold">{user.fullname}</td>
                                 <td className="px-6 py-4 text-slate-500">{user.username}</td>
-                                <td className="px-6 py-4 text-slate-500">{user.password}</td>
                                 <td className="px-6 py-4">
                                     <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase ${user.role === 'Bác sĩ' ? 'bg-blue-50 text-blue-600' : 'bg-emerald-50 text-emerald-600'}`}>
                                         {user.role}

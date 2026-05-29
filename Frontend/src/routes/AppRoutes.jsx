@@ -47,7 +47,7 @@ const AppRoutes = () => {
                     }
                 >
                     <Route index element={<Navigate to="ManagePatient" replace />} />
-                    <Route path="DischargeProcessDoctor/:id" element={<DischargeProcessDoctor />} />
+                    <Route path="DischargeProcessDoctor/:id?" element={<DischargeProcessDoctor />} />
                     <Route path="ManagePatient" element={<ManagePatient />} />
                     <Route path="settings" element={<UserSettings />} />
                     <Route path="OrderEntry" element={<OrderEntry />} />

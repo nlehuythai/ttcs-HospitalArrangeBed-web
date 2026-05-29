@@ -4,12 +4,17 @@ import { MdPeople, MdTimeline, MdPersonAddAlt, MdCheckCircleOutline } from "reac
 const Overview = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
-    const userStr = sessionStorage.getItem('user');
-    const userObj = userStr ? JSON.parse(userStr) : null;
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const res = await fetch(`http://localhost:5000/api/nurse/overview-stats?khoa_id=${userObj.khoa_id}`);
+                const token = sessionStorage.getItem('token');
+                const res = await fetch(`http://localhost:5000/api/nurse/overview-stats`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
                 const result = await res.json();
                 setData(result);
             } catch (err) {
@@ -19,7 +24,7 @@ const Overview = () => {
             }
         };
         fetchStats();
-    }, [userObj.khoa_id]);
+    }, []);
     if (loading) return <div className="p-10 text-center">Đang tải thống kê...</div>;
     if (!data) return <div className="p-10 text-center text-red-500">Không thể tải dữ liệu</div>;
     const stats = [
@@ -32,12 +37,12 @@ const Overview = () => {
     const bedCleanPerCent = ((data.beds.clean / data.beds.total) * 100).toFixed(0);
     const emptyPercent = 100 - bedPercent - bedCleanPerCent;
     return (
-        <div className="flex flex-col gap-8 p-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="flex flex-col gap-8 p-2">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-xl shadow-slate-200/50">
+            <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md sticky top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6">
                 <div>
                     <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Tổng quan hệ thống</h2>
-                    <p className="text-slate-500 text-sm mt-1">Dữ liệu cập nhật thời gian thực từ {userObj.ten_khoa}</p>
+                    <p className="text-slate-500 text-sm mt-1">Dữ liệu cập nhật thời gian thực từ {data.ten_khoa}</p>
                 </div>
                 <div className="px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm text-xs font-semibold text-slate-600 flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
@@ -48,7 +53,6 @@ const Overview = () => {
                 </div>
             </div>
 
-            {/* 1. Stat Cards - Thêm hiệu ứng Hover & Ring */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((item, index) => (
                     <div key={index} className="group bg-white p-6 rounded-[2rem] border border-slate-100 flex justify-between items-start shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 cursor-default">
@@ -69,7 +73,7 @@ const Overview = () => {
                 {/* 2. Tình trạng giường bệnh - Thiết kế lại Progress trực quan */}
                 <div className="lg:col-span-5 bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between">
                     <div>
-                        <h3 className="text-lg font-bold text-slate-800 mb-1">Công suất giường bệnh từ {userObj.ten_khoa}</h3>
+                        <h3 className="text-lg font-bold text-slate-800 mb-1">Công suất giường bệnh từ {data.ten_khoa}</h3>
                         <p className="text-sm text-slate-400 mb-8">Trạng thái phân phối hạ tầng</p>
 
                         <div className="space-y-6 mb-10">
@@ -108,7 +112,7 @@ const Overview = () => {
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h3 className="text-lg font-bold text-slate-800 mb-1">Mật độ bệnh nhân</h3>
-                            <p className="text-sm text-slate-400">Phân bổ theo từng phòng thuộc {userObj.ten_khoa}</p>
+                            <p className="text-sm text-slate-400">Phân bổ theo từng phòng thuộc {data.ten_khoa}</p>
                         </div>
                     </div>
 

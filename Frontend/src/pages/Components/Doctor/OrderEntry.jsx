@@ -32,7 +32,6 @@ const OrderEntry = () => {
         try {
             const payload = {
                 ho_so_id: orderData.ho_so_id,
-                bac_si_id: userData.id,
                 y_ta_id: orderData.y_ta_id || null,
                 loai_y_lenh: orderData.loai_y_lenh,
                 noi_dung_y_lenh: orderData.noi_dung_y_lenh,
@@ -40,9 +39,10 @@ const OrderEntry = () => {
                 thoi_gian_chi_dinh: new Date().toISOString(),
                 trang_thai: "Chờ thực hiện"
             };
+            const token = sessionStorage.getItem('token');
             const response = await fetch("http://localhost:5000/api/doctor/add-order", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify(payload)
             });
             const result = await response.json();
@@ -66,10 +66,17 @@ const OrderEntry = () => {
         }
     };
     const userData = JSON.parse(sessionStorage.getItem("user"));
+    const token = sessionStorage.getItem('token');
 
     const fecthNurse = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/users/nurses/info/${userData.khoa_id}`);
+            const res = await fetch(`http://localhost:5000/api/users/nurses/info/${userData.khoa_id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
             const data = await res.json();
             setNurses(data);
         } catch (err) {
@@ -78,7 +85,13 @@ const OrderEntry = () => {
     }
     const fetchPatients = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/inpatient/${userData.id}`);
+            const res = await fetch(`http://localhost:5000/api/patients/inpatient`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}` // Đính kèm token
+                }
+            });
             const data = await res.json();
             setPatients(data);
 
@@ -92,7 +105,13 @@ const OrderEntry = () => {
     }
     const fetchHistoryOrder = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/doctor/history-order/${userData.id}`)
+            const res = await fetch(`http://localhost:5000/api/doctor/history-order`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
             const data = await res.json();
             setHistoryOrder(data);
 
@@ -113,7 +132,7 @@ const OrderEntry = () => {
             <div className="lg:col-span-1 bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-120px)]">
                 <div className="p-5 border-b border-slate-50 bg-slate-50/50">
                     <h3 className="font-bold text-slate-800 flex items-center gap-2">
-                        <MdPeopleAlt className="text-indigo-600" /> Bệnh nhân của tôi
+                        <MdPeopleAlt className="text-teal-600" /> Bệnh nhân của tôi
                     </h3>
                     <div className="mt-3 relative">
                         <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -138,7 +157,7 @@ const OrderEntry = () => {
                             key={p.id}
                             onClick={() => handleSelectPatient(p)}
                             className={`p-4 rounded-2xl cursor-pointer transition-all border ${selectedPatient?.id === p.id
-                                ? "bg-indigo-600 border-indigo-600 shadow-md shadow-indigo-100"
+                                ? "bg-teal-500 border-teal-400 shadow-md shadow-teal-100"
                                 : "hover:bg-slate-50 border-transparent"
                                 }`}
                         >
@@ -146,11 +165,11 @@ const OrderEntry = () => {
                                 <p className={`font-bold text-sm ${selectedPatient?.id === p.id ? "text-white" : "text-slate-700"}`}>
                                     {p.ho_ten}
                                 </p>
-                                <span className={`text-[10px] px-2 py-0.5 rounded-lg ${selectedPatient?.id === p.id ? "bg-white/20 text-white" : "bg-slate-100 text-slate-500"}`}>
+                                <span className={`text-[10px] px-2 py-0.5 rounded-lg ${selectedPatient?.id === p.id ? "bg-teal-400 text-white" : "bg-slate-100 text-slate-500"}`}>
                                     Giường {p.ma_giuong}
                                 </span>
                             </div>
-                            <p className={`text-xs mt-1 ${selectedPatient?.id === p.id ? "text-indigo-100" : "text-slate-400"}`}>
+                            <p className={`text-xs mt-1 ${selectedPatient?.id === p.id ? "text-slate-100" : "text-slate-400"}`}>
                                 ID: {p.benh_nhan_id}
                             </p>
                         </div>
@@ -163,12 +182,12 @@ const OrderEntry = () => {
                 <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
                     <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-indigo-50/30">
                         <div className="flex items-center gap-3">
-                            <div className="p-2 bg-indigo-600 rounded-lg text-white">
+                            <div className="p-2 bg-teal-500 rounded-lg text-white">
                                 <MdAssignment className="text-xl" />
                             </div>
                             <div>
                                 <h3 className="font-bold text-slate-800 text-lg">Tạo Y lệnh mới</h3>
-                                <p className="text-xs text-indigo-600 font-medium">
+                                <p className="text-xs text-teal-600 font-medium">
                                     Đang chỉ định cho: <span className="uppercase">{selectedPatient?.ho_ten || "Chưa chọn"}</span>
                                 </p>
                             </div>
@@ -186,7 +205,7 @@ const OrderEntry = () => {
                                         type="button"
                                         onClick={() => setOrderData(prev => ({ ...prev, loai_y_lenh: type }))}
                                         className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${orderData.loai_y_lenh === type
-                                            ? "bg-indigo-600 border-indigo-600 text-white shadow-md"
+                                            ? "bg-teal-500 border-teal-600 text-white shadow-md"
                                             : "bg-white border-slate-200 text-slate-500 hover:border-indigo-300"
                                             }`}
                                     >
@@ -221,10 +240,10 @@ const OrderEntry = () => {
                                 <select
                                     value={orderData.muc_do_uu_tien}
                                     onChange={(e) => setOrderData(prev => ({ ...prev, muc_do_uu_tien: e.target.value }))}
-                                    className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-indigo-600 shadow-sm outline-none transition-all cursor-pointer hover:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 pr-10"
+                                    className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-teal-600 shadow-sm outline-none transition-all cursor-pointer hover:border-teal-400 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 pr-10"
                                 >
-                                    <option value="Thường">🟢 Thường</option>
-                                    <option value="Khẩn">🔴 Khẩn cấp</option>
+                                    <option value="Thường">Thường</option>
+                                    <option value="Khẩn">Khẩn cấp</option>
                                 </select>
                             </div>
 
@@ -233,7 +252,7 @@ const OrderEntry = () => {
                                     <MdPeopleAlt className="text-slate-400" />
                                     <span className="text-sm font-bold text-slate-700">Y tá thực hiện</span>
                                 </div>
-                                <select className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-indigo-600 shadow-sm outline-none transition-all cursor-pointer hover:border-indigo-400 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 pr-10"
+                                <select className="bg-white border border-slate-200 rounded-2xl px-4 py-3 text-sm font-bold text-teal-600 shadow-sm outline-none transition-all cursor-pointer hover:border-teal-400 focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 pr-10"
                                     onChange={(e) => setOrderData(prev => ({ ...prev, y_ta_id: e.target.value }))}
                                     value={orderData.y_ta_id}
                                 >
@@ -251,7 +270,7 @@ const OrderEntry = () => {
                                 type="submit"
                                 onClick={handleAddOrder}
                                 disabled={!selectedPatient || loading}
-                                className="flex-[2] py-3 rounded-xl bg-indigo-600 text-white font-bold shadow-lg shadow-indigo-200 disabled:opacity-50"
+                                className="flex-[2] py-3 rounded-xl bg-teal-500 text-white font-bold shadow-lg shadow-teal-100 disabled:opacity-50 hover:bg-teal-600"
                             >
                                 {loading ? "Đang gửi..." : "Xác nhận y lệnh"}
                             </button>
@@ -262,14 +281,14 @@ const OrderEntry = () => {
                 {/* Section 2: Lịch sử y lệnh (Timeline) */}
                 <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm overflow-hidden">
                     <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-                        <MdHistory className="text-indigo-600" /> Lịch sử y lệnh gần đây
+                        <MdHistory className="text-teal-600" /> Lịch sử y lệnh gần đây
                     </h3>
 
                     {historyOrder.length > 0 ? (
                         <div className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
                             <h3 className="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3">
-                                <div className="p-2 bg-indigo-50 rounded-lg">
-                                    <MdHistory className="text-indigo-600" size={24} />
+                                <div className="p-2 bg-teal-50 rounded-lg">
+                                    <MdHistory className="text-teal-600" size={24} />
                                 </div>
                                 Lịch sử y lệnh gần đây
                             </h3>

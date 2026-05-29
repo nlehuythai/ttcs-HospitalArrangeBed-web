@@ -2,11 +2,11 @@ const pool = require('../config/db')
 const addOrderEntry = async (req, res) => {
     const {
         ho_so_id,
-        bac_si_id,
         y_ta_id,
         noi_dung_y_lenh,
         loai_y_lenh,
     } = req.body;
+    const bac_si_id = req.user.id;
     if (!ho_so_id || !bac_si_id || !noi_dung_y_lenh) {
         return res.status(400).json({
             message: "Thiếu thông tin: Mã hồ sơ, bác sĩ và nội dung là bắt buộc!"
@@ -41,7 +41,7 @@ const addOrderEntry = async (req, res) => {
     }
 }
 const getHistoryOrder = async (req, res) => {
-    const { userId } = req.params;
+    const userId = req.user.id;
     if (!userId) {
         return res.status(400).json({
             message: "Thiếu thông tin: Mã bác sĩ !"
@@ -49,7 +49,7 @@ const getHistoryOrder = async (req, res) => {
     }
     try {
         const historyOrder = await pool.query(
-            `Select * from ylenh where bac_si_id=$1 ORDER BY thoi_gian_chi_dinh DESC;`, [userId]
+            `Select * from ylenh where bac_si_id=$1 AND thoi_gian_chi_dinh >= NOW() - INTERVAL '7 days' ORDER BY thoi_gian_chi_dinh DESC;`, [userId]
         );
         res.status(200).json(historyOrder.rows);
     } catch (err) {

@@ -9,12 +9,26 @@ const ManagePatient = () => {
     const [loading, setLoading] = useState(true);
     const [selectedId, setSelectedId] = useState(null);
     const activePatient = patients.find(p => p.id === selectedId);
-    const userData = JSON.parse(sessionStorage.getItem("user"));
-    const userId = userData ? userData.id : null;
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredPatients = patients.filter((p) => {
+        const search = searchTerm.toLowerCase().trim();
+
+        const matchesName = p.ho_ten ? p.ho_ten.toLowerCase().includes(search) : false;
+        const matchesBed = p.ma_giuong ? p.ma_giuong.toLowerCase().includes(search) : false;
+
+        return matchesName || matchesBed;
+    });
     const fetchPatients = async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:5000/api/patients/inpatient/${userId}`);
+            const token = sessionStorage.getItem('token');
+            const response = await fetch(`http://localhost:5000/api/patients/inpatient`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (response.ok) {
                 const data = await response.json();
                 setPatients(data);
@@ -29,59 +43,69 @@ const ManagePatient = () => {
         fetchPatients();
     }, []);
     return (
-        <div className="flex gap-8 h-[calc(100vh-180px)] animate-in fade-in duration-700 bg-slate-50/50 p-1">
+        <div className="flex gap-8 h-[calc(100vh-180px)] animate-in fade-in duration-700 p-1">
             <div className="w-1/3 max-w-[350px] flex flex-col">
                 <div className="flex items-center justify-between mb-6 px-1">
                     <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">
                         Bệnh nhân nội trú
                     </h3>
-                    <span className="bg-sky-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-sm"> {patients.length} </span>
+                    <span className="bg-teal-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-sm"> {filteredPatients.length} </span>
                 </div>
 
                 <div className="relative mb-4">
                     <input
                         type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         placeholder="Tìm tên, số giường..."
-                        className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-sm focus:ring-4 focus:ring-indigo-500/5 focus:border-indigo-500 outline-none transition-all"
+                        className="w-full bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-sm focus:ring-4 focus:ring-teal-500/5 focus:border-teal-500 outline-none transition-all"
                     />
+                    {searchTerm && (
+                        <button
+                            onClick={() => setSearchTerm("")}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs font-bold"
+                        >
+                            Xóa
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex flex-col gap-3 overflow-y-auto pr-3 custom-scrollbar">
-                    {patients.length > 0 ? (
-                        patients.map((p) => (
+                    {filteredPatients.length > 0 ? (
+                        filteredPatients.map((p) => (
                             <div
                                 key={p.id}
                                 onClick={() => setSelectedId(selectedId === p.id ? null : p.id)}
                                 className={`group p-4 rounded-[1.8rem] cursor-pointer transition-all duration-300 relative border ${selectedId === p.id
-                                    ? "bg-sky-50 border-sky-200 shadow-md"
+                                    ? "bg-teal-400 border-teal-200 shadow-md"
                                     : "bg-white border-slate-100 hover:border-sky-100"
                                     }`}
                             >
                                 <div className="flex justify-between items-start">
                                     <div className="space-y-1">
-                                        <p className={`font-bold text-base tracking-tight transition-colors ${selectedId === p.id ? "text-cyan-700" : "text-slate-800"
+                                        <p className={`font-bold text-base tracking-tight transition-colors ${selectedId === p.id ? "text-slate-200" : "text-slate-800"
                                             }`}>
                                             {p.ho_ten}
                                         </p>
                                         <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-medium ${selectedId === p.id ? "text-cyan-700" : "text-slate-800"
+                                            <span className={`text-xs font-medium ${selectedId === p.id ? "text-slate-100" : "text-slate-800"
                                                 }`}>
                                                 {new Date(p.nam_sinh).toLocaleDateString('vi-VN')} • {p.gioi_tinh}
                                             </span>
                                         </div>
                                     </div>
                                     <span className={`text-[11px] px-3 py-1 rounded-xl font-bold tracking-wider transition-all ${selectedId === p.id
-                                        ? "bg-sky-500 text-white shadow-lg shadow-sky-200"
+                                        ? "bg-teal-500 text-slate-100 shadow-lg shadow-teal-400"
                                         : "bg-slate-100 text-slate-500"
                                         }`}>
                                         {p.ma_giuong}
                                     </span>
                                 </div>
 
-                                <div className={`mt-3 pt-3 border-t flex items-center gap-2 ${selectedId === p.id ? "border-slate-800" : "border-slate-50"
+                                <div className={`mt-3 pt-3 border-t flex items-center gap-2 ${selectedId === p.id ? "border-slate-100" : "border-slate-50"
                                     }`}>
-                                    <div className={`w-1.5 h-1.5 rounded-full ${selectedId === p.id ? "bg-emerald-400" : "bg-emerald-500"}`}></div>
-                                    <p className={`text-[11px] font-semibold uppercase tracking-widest ${selectedId === p.id ? "text-cyan-700" : "text-slate-800"
+                                    <div className={`w-1.5 h-1.5 rounded-full ${selectedId === p.id ? "bg-slate-100" : "bg-emerald-500"}`}></div>
+                                    <p className={`text-[11px] font-semibold uppercase tracking-widest ${selectedId === p.id ? "text-slate-100" : "text-slate-800"
                                         }`}>
                                         {p.ten_khoa}
                                     </p>

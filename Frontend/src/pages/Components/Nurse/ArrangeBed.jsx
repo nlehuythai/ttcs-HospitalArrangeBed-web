@@ -1,17 +1,23 @@
 import { useState, useEffect } from "react";
 import BedAssignmentModal from "./BedAssignmentModal";
+import { data } from "react-router-dom";
 
 const ArrangeBed = () => {
-    const [selectedKhoa, setSelectedKhoa] = useState("Tất cả");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [targetBed, setTargetBed] = useState(null);
     const [waitingPatients, setWaitingPatients] = useState([]);
     const [beds, setBeds] = useState([]); // Khởi tạo mảng rỗng
-    const [khoas, setKhoas] = useState([]); // Thêm state lưu danh sách khoa
-
+    const token = sessionStorage.getItem('token');
     const loadWaitingList = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/nurse/waiting-list');
+            const res = await fetch('http://localhost:5000/api/nurse/waiting-list',
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
             const data = await res.json();
             setWaitingPatients(data);
         } catch (err) {
@@ -19,11 +25,15 @@ const ArrangeBed = () => {
         }
     };
 
-    const userStr = sessionStorage.getItem('user');
-    const userObj = userStr ? JSON.parse(userStr) : null;
     const loadBeds = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/beds?khoa_id=${userObj?.khoa_id}`);
+            const res = await fetch(`http://localhost:5000/api/beds`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await res.json();
             setBeds(data);
         } catch (err) {
@@ -31,20 +41,9 @@ const ArrangeBed = () => {
         }
     };
 
-    const loadKhoas = async () => {
-        try {
-            const res = await fetch('http://localhost:5000/api/departments');
-            const data = await res.json();
-            setKhoas(data);
-        } catch (err) {
-            console.error("Lỗi load khoa:", err);
-        }
-    };
-
     useEffect(() => {
         loadWaitingList();
         loadBeds();
-        loadKhoas();
     }, []);
 
     // --- LOGIC TÍNH TOÁN LEGEND (Dựa trên dữ liệu thực) ---
@@ -67,11 +66,10 @@ const ArrangeBed = () => {
         try {
             const response = await fetch('http://localhost:5000/api/nurse/assign-bed', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
                     hoso_id: hosoId,
                     giuong_id: targetBed.id,
-                    y_ta_id: userObj?.id
                 })
             });
 
@@ -86,11 +84,6 @@ const ArrangeBed = () => {
         }
     };
 
-    // --- LOGIC LỌC DỮ LIỆU ---
-    // Lưu ý: So sánh với bed.ten_khoa (tên cột sau khi JOIN ở Backend)
-    // const filteredBeds = selectedKhoa === "Tất cả"
-    //     ? beds
-    //     : beds.filter(bed => bed.ten_khoa === selectedKhoa);
 
     return (
         <div className="flex flex-col gap-10 p-4 animate-in fade-in duration-700">
@@ -102,8 +95,8 @@ const ArrangeBed = () => {
                             <h2 className="text-xl font-black text-slate-800 tracking-tight">
                                 Danh sách giường bệnh
                             </h2>
-                            <span className="px-3 py-1 bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase rounded-lg border border-indigo-100">
-                                {userObj?.ten_khoa}
+                            <span className="px-3 py-1 bg-teal-50 text-teal-600 text-[10px] font-black uppercase rounded-lg border border-teal-100">
+                                {data?.ten_khoa}
                             </span>
                         </div>
                         <p className="text-slate-400 text-xs font-bold mt-1">

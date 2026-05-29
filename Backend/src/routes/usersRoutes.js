@@ -8,6 +8,6 @@ router.get('/', userController.getAllUsers);
 // Định nghĩa route POST để thêm người dùng mới
 router.post('/add', userController.addUser);
 router.get('/nurses/info/:khoa_id', nurseController.getnurseInfo);
-router.delete('/delete/:id', userController.deleteUser);
+router.patch('/delete/:id', userController.deleteUser);
 
 module.exports = router;

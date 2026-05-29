@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { MdPerson, MdLock, MdVerifiedUser, MdOutlineBadge, MdEmail, MdApartment, MdSave, MdPhone } from 'react-icons/md';
 
 const UserProfileSettings = () => {
@@ -56,7 +56,7 @@ const UserProfileSettings = () => {
     return (
         <div className="max-w-4xl mx-auto p-6 animate-in fade-in duration-500">
             <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-2">
-                <MdOutlineBadge className="text-indigo-600" /> Cài đặt tài khoản
+                <MdOutlineBadge className="text-teal-500" /> Cài đặt tài khoản
             </h2>
 
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col md:flex-row min-h-[500px]">
@@ -65,13 +65,13 @@ const UserProfileSettings = () => {
                     <div className="space-y-2">
                         <button
                             onClick={() => setActiveTab('profile')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'profile' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-500 hover:bg-slate-100'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'profile' ? 'bg-teal-500 text-white shadow-lg shadow-teal-100' : 'text-slate-500 hover:bg-slate-100'}`}
                         >
                             <MdPerson size={20} /> Thông tin cá nhân
                         </button>
                         <button
                             onClick={() => setActiveTab('security')}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'security' ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-500 hover:bg-slate-100'}`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all ${activeTab === 'security' ? 'bg-teal-500 text-white shadow-lg shadow-teal-100' : 'text-slate-500 hover:bg-slate-100'}`}
                         >
                             <MdLock size={20} /> Bảo mật & mật khẩu
                         </button>
@@ -83,7 +83,7 @@ const UserProfileSettings = () => {
                     {activeTab === 'profile' ? (
                         <div className="space-y-6">
                             <div className="flex items-center gap-4 mb-8">
-                                <div className="w-20 h-20 bg-indigo-100 rounded-[2rem] flex items-center justify-center text-indigo-600 text-3xl font-black">
+                                <div className="w-20 h-20 bg-teal-100 rounded-[2rem] flex items-center justify-center text-teal-600 text-3xl font-black">
                                     {user.fullname?.charAt(0)}
                                 </div>
                                 <div>
@@ -140,7 +140,7 @@ const UserProfileSettings = () => {
 
                             <button
                                 disabled={loading}
-                                className="flex items-center justify-center gap-2 w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-600 transition-all active:scale-95 disabled:bg-slate-300 shadow-xl shadow-slate-200"
+                                className="flex items-center justify-center gap-2 w-full py-4 bg-teal-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-600 transition-all active:scale-95 disabled:bg-slate-300 shadow-xl shadow-slate-200"
                             >
                                 <MdSave size={18} /> {loading ? 'Đang lưu...' : 'Cập nhật mật khẩu'}
                             </button>
@@ -154,7 +154,7 @@ const UserProfileSettings = () => {
 
 const InfoItem = ({ icon, label, value }) => (
     <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-        <div className="flex items-center gap-2 text-indigo-500 mb-1">
+        <div className="flex items-center gap-2 text-teal-500 mb-1">
             {icon}
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
         </div>

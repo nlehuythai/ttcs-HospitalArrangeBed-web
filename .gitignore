@@ -1,0 +1,56 @@
+# ====================================================================
+# 1. DEPENDENCIES (Thư mục cài đặt thư viện - Cực kỳ nặng, không push)
+# ====================================================================
+# Chặn tất cả thư mục node_modules ở bất kỳ cấp nào (cả gốc, frontend, backend)
+**/node_modules/
+
+# Chặn các file môi trường bảo mật ở bất kỳ đâu
+**/.env
+**/.env.local
+
+# Chặn thư mục build sản phẩm của Frontend (Vite/React)
+**/dist/
+**/build/
+
+# Chặn các file log hệ thống sinh ra khi test hoặc chạy backend
+**/*.log
+
+
+
+# Dành riêng cho Next.js
+.next/
+
+# Dành cho Nuxt.js
+.nuxt/
+
+# Các file nén/đóng gói sản phẩm
+*.tsbuildinfo
+*.zip
+*.tar.gz
+*.rar
+
+# ====================================================================
+# 4. LOGS & DIAGNOSTICS (File nhật ký lỗi hệ thống)
+# ====================================================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+
+
+
+# Editor (VS Code, WebStorm)
+.vscode/
+!.vscode/extensions.json # Giữ lại nếu muốn gợi ý extension cho nhóm
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+

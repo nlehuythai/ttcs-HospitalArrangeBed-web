@@ -96,7 +96,7 @@ const HistoryBedModal = ({ isOpen, onClose, bed }) => {
                         </div>
                     ) : (
                         <div className="text-center py-10">
-                            <p className="text-sm font-bold text-slate-400 italic">Chưa có lịch sử biến động cho giường này.</p>
+                            <p className="text-sm font-bold text-slate-400 italic">Chưa có lịch sử biến động cho giường này trong 7 ngày gần đây.</p>
                         </div>
                     )}
                 </div>

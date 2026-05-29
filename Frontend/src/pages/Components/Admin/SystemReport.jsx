@@ -71,7 +71,6 @@ const SystemReport = () => {
     const summaryData = [
         { label: "Tổng Nhân sự", value: stats.total_users, sub: "Tài khoản hệ thống", icon: <MdPeople />, color: "from-blue-500 to-blue-600", light: "bg-blue-50 text-blue-600" },
         { label: "Bác sĩ / Y tá", value: `${stats.total_doctors} : ${stats.total_nurses}`, sub: "Đội ngũ chuyên môn", icon: <MdMonitorHeart />, color: "from-emerald-500 to-emerald-600", light: "bg-emerald-50 text-emerald-600" },
-        { label: "Bệnh nhân hiện tại", value: stats.active_patients, sub: "Đang điều trị nội trú", icon: <MdPeople />, color: "from-purple-500 to-purple-600", light: "bg-purple-50 text-purple-600" },
         { label: "Bệnh nhân mới", value: stats.new_active_patients, sub: "Bệnh nhân nhập viện trong tháng này", icon: <MdPeople />, color: "from-cyan-500 to-cyan-600", light: "bg-cyan-50 text-cyan-600" },
         { label: "Bệnh nhân xuất viện", value: stats.discharge_patients, sub: "Bệnh nhân xuát viện viện trong tháng này", icon: <MdPeople />, color: "from-amber-500 to-amber-600", light: "bg-amber-50 text-amber-600" },
         { label: "Lấp đầy Giường", value: stats.occupancy_Rate_Month, sub: "Hiệu suất sử dụng", icon: <MdAutoGraph />, color: "from-orange-500 to-orange-600", light: "bg-orange-50 text-orange-600" },
@@ -84,7 +83,7 @@ const SystemReport = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-white/60 backdrop-blur-md p-6 rounded-[2rem] border border-white shadow-xl shadow-slate-200/50">
                 <div>
                     <h2 className="text-3xl font-black text-slate-800 tracking-tight flex items-center gap-3">
-                        <div className="h-8 w-2 bg-blue-600 rounded-full"></div>
+                        <div className="h-8 w-2 bg-teal-500 rounded-full"></div>
                         Báo cáo Tổng quan
                     </h2>
                     <p className="text-slate-500 font-medium ml-5">Cập nhật dữ liệu thời gian thực từ các khoa</p>
@@ -93,7 +92,7 @@ const SystemReport = () => {
                     <button onClick={handleExportExcel} className="px-4 py-2 bg-white border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white rounded-xl text-sm font-bold transition-all duration-300">
                         Xuất EXCEL
                     </button>
-                    <button onClick={handleRefresh} disabled={isRefreshing} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-sm font-bold text-white hover:shadow-lg transition-all active:scale-95">
+                    <button onClick={handleRefresh} disabled={isRefreshing} className="px-4 py-2 bg-teal-500 hover:bg-teal-600 rounded-xl text-sm font-bold text-white hover:shadow-lg transition-all active:scale-95">
                         {isRefreshing ? (
                             <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
                         ) : (
@@ -147,7 +146,7 @@ const SystemReport = () => {
                 <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30">
                     <div className="flex items-center justify-between mb-8">
                         <h3 className="font-black text-xl text-slate-800 flex items-center gap-2">
-                            <MdPeople className="text-blue-500" /> Thống kê Nhân sự
+                            <MdPeople className="text-teal-500" /> Thống kê Nhân sự
                         </h3>
                         <span className="text-[10px] font-bold bg-slate-100 text-slate-500 px-3 py-1 rounded-full uppercase">Toàn bệnh viện</span>
                     </div>
@@ -169,7 +168,7 @@ const SystemReport = () => {
 
                     <div className="relative flex items-center justify-between mb-8">
                         <h3 className="font-black text-xl flex items-center gap-2 text-white">
-                            <MdBed className="text-orange-400" /> Tình trạng Giường bệnh hiện tại
+                            <MdBed className="text-teal-400" /> Tình trạng Giường bệnh hiện tại
                         </h3>
                     </div>
 
@@ -183,12 +182,12 @@ const SystemReport = () => {
                                 </div>
                                 <div className="text-right">
                                     <p className="text-slate-400 text-[10px] font-bold">TRỐNG</p>
-                                    <p className="text-xl font-black text-orange-400">{stats.total_beds - stats.occupied_beds}</p>
+                                    <p className="text-xl font-black text-teal-400">{stats.total_beds - stats.occupied_beds}</p>
                                 </div>
                             </div>
                             <div className="h-4 w-full bg-slate-800 rounded-full overflow-hidden p-1 shadow-inner">
                                 <div
-                                    className="h-full bg-gradient-to-r from-orange-400 to-red-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(251,146,60,0.5)]"
+                                    className="h-full bg-gradient-to-r from-teal-400 to-amber-500 rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(251,146,60,0.5)]"
                                     style={{ width: `${occupancyPercent}%` }}
                                 ></div>
                             </div>
@@ -205,7 +204,7 @@ const SystemReport = () => {
                             </div>
                         </div>
 
-                        <button onClick={handleGoToBedMap} className="w-full py-4 bg-orange-500 hover:bg-orange-600 text-white rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 group">
+                        <button onClick={handleGoToBedMap} className="w-full py-4 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl font-black text-sm transition-all flex items-center justify-center gap-2 group">
                             Xem chi tiết sơ đồ giường
                             <MdArrowForward className="group-hover:translate-x-1 transition-transform" />
                         </button>

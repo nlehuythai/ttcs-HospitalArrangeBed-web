@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const patientController = require('../controllers/patientController');
-
-router.get('/patient-records', patientController.getPatientRecords);
-router.get('/inpatient/:userId', patientController.getInpatient);
-router.patch('/discharge-order/:id', patientController.dischargeOrder);
-router.get('/waiting-discharge', patientController.getWaitingDischarge);
-router.patch('/complete-discharge/:id', patientController.completeDischarge);
+const verifyToken = require('../Middleware/authMiddleware');
+router.get('/patient-records', verifyToken, patientController.getPatientRecords);
+router.get('/inpatient', verifyToken, patientController.getInpatient);
+router.patch('/discharge-order/:id', verifyToken, patientController.dischargeOrder);
+router.get('/waiting-discharge', verifyToken, patientController.getWaitingDischarge);
+router.patch('/complete-discharge/:id', verifyToken, patientController.completeDischarge);
 module.exports = router;

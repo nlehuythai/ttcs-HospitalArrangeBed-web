@@ -18,7 +18,6 @@ const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName
 
     const handleSave = async () => {
         if (!formData.noi_dung) return alert("Vui lòng nhập nội dung diễn biến");
-
         try {
             const res = await fetch('http://localhost:5000/api/admission/history/add', {
                 method: 'POST',
@@ -43,17 +42,16 @@ const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName
             alert("Lỗi kết nối server");
         }
     };
-
     if (!isOpen) return null;
 
     return (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="bg-slate-100 w-full max-w-2xl rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Header */}
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <div>
                         <h2 className="text-xl font-bold text-slate-900">Theo dõi diễn biến - {patientName}</h2>
-                        <p className="text-xs text-slate-500 mt-1 font-medium">Bác sĩ phụ trách: <span className="text-blue-600 uppercase font-bold">{doctorName}</span></p>
+                        <p className="text-xs text-slate-500 mt-1 font-medium">Bác sĩ phụ trách: <span className="text-teal-600 uppercase font-bold">{doctorName}</span></p>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white rounded-full text-slate-400 transition-colors shadow-sm">
                         <MdClose size={24} />
@@ -64,7 +62,7 @@ const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName
                     {/* FORM THÊM MỚI */}
                     <div className="p-6 bg-slate-50/50 border border-slate-200 rounded-[1.5rem] space-y-4">
                         <p className="font-bold text-sm text-slate-800 flex items-center gap-2">
-                            <MdAdd className="text-blue-600" /> Thêm diễn biến mới
+                            <MdAdd className="text-teal-600" /> Thêm diễn biến mới
                         </p>
 
                         <div className="grid grid-cols-4 gap-4">
@@ -85,7 +83,7 @@ const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName
                         </div>
 
                         <div className="flex justify-end gap-2">
-                            <button onClick={handleSave} className="px-6 py-2.5 text-sm font-bold bg-slate-900 text-white rounded-xl shadow-lg hover:bg-slate-800 transition-all">
+                            <button onClick={handleSave} className="px-6 py-2.5 text-sm font-bold bg-teal-500 text-slate-100 rounded-xl shadow-lg hover:bg-teal-600 transition-all">
                                 Lưu diễn biến
                             </button>
                         </div>

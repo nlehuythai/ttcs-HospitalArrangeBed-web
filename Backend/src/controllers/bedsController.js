@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 const getAllInfoBeds = async (req, res) => {
-    const { khoa_id } = req.query;
+    const khoa_id = req.user.khoa_id;
     try {
         const result = await pool.query(`
             SELECT g.id, g.ma_giuong, g.trang_thai, p.ten_phong, k.ten_khoa,k.id as khoa_id,b.ho_ten as ten_bn,b.id as benh_nhan_id,u.fullname as ten_bs
