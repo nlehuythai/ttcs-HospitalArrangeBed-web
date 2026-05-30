@@ -4,9 +4,7 @@
 # Chặn tất cả thư mục node_modules ở bất kỳ cấp nào (cả gốc, frontend, backend)
 **/node_modules/
 
-# Chặn các file môi trường bảo mật ở bất kỳ đâu
-**/.env
-**/.env.local
+
 
 # Chặn thư mục build sản phẩm của Frontend (Vite/React)
 **/dist/
