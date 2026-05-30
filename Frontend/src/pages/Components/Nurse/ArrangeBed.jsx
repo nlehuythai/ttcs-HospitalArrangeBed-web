@@ -64,7 +64,7 @@ const ArrangeBed = () => {
     const handleConfirmAssignment = async (hosoId) => {
         if (!targetBed) return;
         try {
-            const response = await fetch('${API_URL}/api/nurse/assign-bed', {
+            const response = await fetch(`${API_URL}/api/nurse/assign-bed`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({
