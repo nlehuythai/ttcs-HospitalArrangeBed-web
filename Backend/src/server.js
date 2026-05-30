@@ -5,10 +5,7 @@ const app = express();
 
 app.use(
     cors({
-        origin: [
-            "http://localhost:5000",
-            "https://ttcs-hospital-arrange-bed-web-8wv6-4s517dey9.vercel.app",
-        ],
+        origin: '*',
         methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 
         credentials: true,
