@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { API_URL } from '../../../../api';
 const EditBedModal = ({ isOpen, onClose, selectedBed, newStatus, setNewStatus, onRefresh }) => {
     const [loading, setLoading] = useState(false);
     const token = sessionStorage.getItem('token');
@@ -10,7 +11,7 @@ const EditBedModal = ({ isOpen, onClose, selectedBed, newStatus, setNewStatus, o
         }
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/managebeds/${selectedBed.id}`, {
+            const response = await fetch(`${API_URL}/api/admin/managebeds/${selectedBed.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { MdClose, MdHistory } from "react-icons/md";
-
+import { API_URL } from '../../../../api';
 const HistoryBedModal = ({ isOpen, onClose, bed }) => {
     const [historyData, setHistoryData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -19,7 +19,7 @@ const HistoryBedModal = ({ isOpen, onClose, bed }) => {
     const fetchHistory = async () => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/bed-history/${bed.id}`);
+            const response = await fetch(`${API_URL}/api/admin/bed-history/${bed.id}`);
             const data = await response.json();
             setHistoryData(data);
         } catch (error) {

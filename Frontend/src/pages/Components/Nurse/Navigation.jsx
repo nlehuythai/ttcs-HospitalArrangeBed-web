@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { MdDashboard, MdPeople, MdHotel, MdDescription, MdHealthAndSafety } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../../api";
 const Navigation = () => {
     const tabs = [
         { id: "overview", label: "Tổng quan", icon: <MdDashboard size={20} /> },
@@ -22,7 +23,7 @@ const Navigation = () => {
                 console.warn("Không tìm thấy token xác thực");
                 return;
             }
-            const response = await fetch(`http://localhost:5000/api/nurse/pending-actions`, {
+            const response = await fetch(`${API_URL}/api/nurse/pending-actions`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

@@ -6,6 +6,7 @@ import {
 import HistoryModal from "./HandleButton/HistoryBedModal";
 import EditBedModal from "./HandleButton/EditBedModal";
 import AddBedModal from "./HandleButton/AddBedModal";
+import { API_URL } from "../../../api";
 const AdminBedMap = () => {
     const [beds, setBeds] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ const AdminBedMap = () => {
     const token = sessionStorage.getItem('token');
     const fetchData = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/admin/totalbeds');
+            const res = await fetch(`${API_URL}/api/admin/totalbeds`);
             const data = await res.json();
             setBeds(data)
             setLoading(false);
@@ -32,7 +33,7 @@ const AdminBedMap = () => {
     }
     const loadKhoas = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/departments');
+            const res = await fetch(`${API_URL}/api/departments`);
             const data = await res.json();
             setKhoas(data);
         } catch (err) {
@@ -42,7 +43,7 @@ const AdminBedMap = () => {
     const handleDeleteBed = async (id) => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/delete-bed/${id}`, {
+            const response = await fetch(`${API_URL}/api/admin/delete-bed/${id}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             });

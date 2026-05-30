@@ -1,7 +1,7 @@
 import React from "react";
 import { MdPersonAdd, MdEdit, MdDelete } from "react-icons/md";
 import { useState, useEffect } from "react";
-
+import { API_URL } from '../../../api';
 const AccountManagement = () => {
 
     const [showAddForm, setShowAddForm] = useState(false);
@@ -26,8 +26,8 @@ const AccountManagement = () => {
         setLoading(true);
         try {
             const [userRes, deptRes] = await Promise.all([
-                fetch(`http://localhost:5000/api/users?limit=${LIMIT}&offset=${currentOffset}`),
-                fetch('http://localhost:5000/api/departments')
+                fetch(`${API_URL}/api/users?limit=${LIMIT}&offset=${currentOffset}`),
+                fetch(`${API_URL}/api/departments`)
             ]);
             const userData = await userRes.json();
             const deptData = await deptRes.json();
@@ -60,7 +60,7 @@ const AccountManagement = () => {
     const handleAddUser = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/users/add', {
+            const response = await fetch(`${API_URL}/api/users/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newUser)
@@ -87,7 +87,7 @@ const AccountManagement = () => {
     const handleDeleteUser = async (userId) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa tài khoản này?")) {
             try {
-                const response = await fetch(`http://localhost:5000/api/users/delete/${userId}`, {
+                const response = await fetch(`${API_URL}/api/users/delete/${userId}`, {
                     method: 'PATCH',
                 });
                 const data = await response.json();

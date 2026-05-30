@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MdPerson, MdLock, MdVerifiedUser, MdOutlineBadge, MdEmail, MdApartment, MdSave, MdPhone } from 'react-icons/md';
-
+import { API_URL } from '../../api';
 const UserProfileSettings = () => {
     const [activeTab, setActiveTab] = useState('profile');
     const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ const UserProfileSettings = () => {
         setLoading(true);
         try {
             // Gọi API đổi mật khẩu (sẽ viết ở bước sau)
-            const response = await fetch('http://localhost:5000/api/auth/change-password', {
+            const response = await fetch(`${API_URL}/api/auth/change-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

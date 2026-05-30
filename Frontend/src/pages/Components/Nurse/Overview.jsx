@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MdPeople, MdTimeline, MdPersonAddAlt, MdCheckCircleOutline } from "react-icons/md";
-
+import { API_URL } from "../../../api";
 const Overview = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -8,7 +8,7 @@ const Overview = () => {
         const fetchStats = async () => {
             try {
                 const token = sessionStorage.getItem('token');
-                const res = await fetch(`http://localhost:5000/api/nurse/overview-stats`, {
+                const res = await fetch(`${API_URL}/api/nurse/overview-stats`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

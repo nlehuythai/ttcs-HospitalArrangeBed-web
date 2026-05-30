@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdPerson, MdLocalHospital, MdHistory, MdFavorite, MdWaterDrop, MdThermostat, MdAir } from "react-icons/md";
-
+import { API_URL } from "../../../../api";
 const DetailPatients = (props) => {
     const { patients, selectedId } = props;
     const [history, setHistory] = useState([]);
@@ -14,7 +14,7 @@ const DetailPatients = (props) => {
             if (activePatient?.benh_nhan_id) {
                 setLoadingHistory(true);
                 try {
-                    const res = await fetch(`http://localhost:5000/api/admission/${activePatient.benh_nhan_id}/history`);
+                    const res = await fetch(`${API_URL}/api/admission/${activePatient.benh_nhan_id}/history`);
                     const data = await res.json();
                     setHistory(data);
                 } catch (err) {

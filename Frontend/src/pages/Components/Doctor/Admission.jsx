@@ -1,6 +1,6 @@
 import { MdExpandMore, MdClose, MdPerson, MdLocalHospital } from "react-icons/md";
 import { useState, useEffect } from "react";
-
+import { API_URL } from "../../../api";
 const Admission = ({ isOpen, onClose, onRefresh }) => {
     // const [departments, setDepartments] = useState([]);
 
@@ -33,7 +33,7 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
             }
 
             try {
-                const res = await fetch(`http://localhost:5000/api/users/nurses/info/${formData.khoa_id}`);
+                const res = await fetch(`${API_URL}/api/users/nurses/info/${formData.khoa_id}`);
                 if (res.ok) {
                     const data = await res.json();
                     setNurses(data);
@@ -66,7 +66,7 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
         }
 
         try {
-            const response = await fetch('http://localhost:5000/api/admission/add', {
+            const response = await fetch(`${API_URL}/api/admission/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dataToSend)

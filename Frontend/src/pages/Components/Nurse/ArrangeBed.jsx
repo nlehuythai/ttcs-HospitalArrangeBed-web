@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import BedAssignmentModal from "./BedAssignmentModal";
 import { data } from "react-router-dom";
-
+import { API_URL } from "../../../api";
 const ArrangeBed = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [targetBed, setTargetBed] = useState(null);
@@ -10,7 +10,7 @@ const ArrangeBed = () => {
     const token = sessionStorage.getItem('token');
     const loadWaitingList = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/nurse/waiting-list',
+            const res = await fetch(`${API_URL}/api/nurse/waiting-list`,
                 {
                     method: 'GET',
                     headers: {
@@ -27,7 +27,7 @@ const ArrangeBed = () => {
 
     const loadBeds = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/beds`, {
+            const res = await fetch(`${API_URL}/api/beds`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ const ArrangeBed = () => {
     const handleConfirmAssignment = async (hosoId) => {
         if (!targetBed) return;
         try {
-            const response = await fetch('http://localhost:5000/api/nurse/assign-bed', {
+            const response = await fetch('${API_URL}/api/nurse/assign-bed', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({

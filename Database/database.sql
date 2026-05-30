@@ -148,3 +148,22 @@ INSERT INTO users (
 ('Quản trị viên Nguyễn', 'admin', '123456', 'Admin', 7, 'Hoạt động', 'admin@hospital.vn', '0384378343', 'ADCNTT01'),
 ('Bác sĩ Trần Văn Ngoan', 'bsngoai', '123', 'Bác sĩ', 2, 'Hoạt động', 'bsib@hospital.vn', '0782378232', 'BSNTH01'),
 ('Đào Văn Kha', 'bsnhi', '123', 'Bác sĩ', 3, 'Hoạt động', 'bsinhi@hospital.vn', '0887483473', 'BSNHI0001');
+INSERT INTO khoa (ten_khoa, ma_khoa) VALUES
+('Nội Tim Mạch', 'NTM'),
+('Ngoại Tổng Hợp', 'NTH'),
+('Khoa Nhi', 'NHI'),
+('Hồi Sức Cấp Cứu', 'HSCC'),
+('Sản Phụ Khoa', 'SAN'),
+('Khoa Truyền Nhiễm', 'TN'),
+('Phòng công nghệ thông tin', 'CNTT');
+INSERT INTO phong (ten_phong, khoa_id) VALUES
+('Phòng 101 - Tim mạch (Thường)', 1),
+('Phòng 102 - Tim mạch (VIP)', 1),
+('Phòng 201 - Hậu phẫu', 2),
+('Phòng 202 - Chấn thương', 2),
+('Phòng 301 - Nhi sơ sinh', 3),
+('Phòng 302 - Nhi tổng hợp', 3),
+('Phòng 401 - Cấp cứu nội', 4),
+('Phòng 402 - Cấp cứu ngoại', 4),
+('Phòng 501 - Chờ sinh', 5),
+('Phòng 502 - Sau sinh', 5);

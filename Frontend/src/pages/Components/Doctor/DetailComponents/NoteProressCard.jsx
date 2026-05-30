@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdClose, MdAdd, MdFavorite, MdWaterDrop, MdThermostat, MdAir } from 'react-icons/md';
-
+import { API_URL } from "../../../../api";
 const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName }) => {
 
     // 2. State cho Form thêm mới
@@ -19,7 +19,7 @@ const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName
     const handleSave = async () => {
         if (!formData.noi_dung) return alert("Vui lòng nhập nội dung diễn biến");
         try {
-            const res = await fetch('http://localhost:5000/api/admission/history/add', {
+            const res = await fetch(`${API_URL}/api/admission/history/add`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

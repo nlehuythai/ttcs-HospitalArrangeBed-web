@@ -4,6 +4,7 @@ import {
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { API_URL } from "../../../api";
 const TaskList = () => {
     const navigate = useNavigate();
     const [patients, setPatients] = useState([]);
@@ -18,7 +19,7 @@ const TaskList = () => {
 
     const loadPatients = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/patient-records`, {
+            const res = await fetch(`${API_URL}/api/patients/patient-records`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -30,7 +31,7 @@ const TaskList = () => {
     };
     const loadOrders = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/nurse-task`, {
+            const res = await fetch(`${API_URL}/api/nurse-task`, {
                 method: 'GET',
                 headers: getAuthHeaders()
             });
@@ -56,7 +57,7 @@ const TaskList = () => {
 
     const handleCompleteOrder = async (orderId) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/orders/${orderId}/complete`, {
+            const res = await fetch(`${API_URL}/api/orders/${orderId}/complete`, {
                 method: 'PATCH',
                 headers: getAuthHeaders()
             });

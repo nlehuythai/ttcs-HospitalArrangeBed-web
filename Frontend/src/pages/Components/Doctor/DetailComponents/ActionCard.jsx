@@ -3,6 +3,7 @@ import { MdEditNote, MdExitToApp } from "react-icons/md";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import NoteProressCard from "./NoteProressCard";
+
 const ActionCard = (props) => {
     const [showNote, setShowNote] = useState(false);
     const { selectedPatient } = props;

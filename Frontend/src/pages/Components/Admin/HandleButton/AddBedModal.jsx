@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdOutlineBed, MdAttachMoney, MdMeetingRoom, MdClose } from 'react-icons/md';
-
+import { API_URL } from '../../../../api';
 const AddBedModal = ({ isOpen, onClose, onAddSuccess }) => {
     const [formData, setFormData] = useState({
         ma_giuong: '',
@@ -14,7 +14,7 @@ const AddBedModal = ({ isOpen, onClose, onAddSuccess }) => {
     const [rooms, setRooms] = useState([]);
     const fetchRooms = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/rooms');
+            const response = await fetch(`${API_URL}/api/rooms`);
             const data = await response.json();
             setRooms(data);
         } catch (error) {
@@ -33,7 +33,7 @@ const AddBedModal = ({ isOpen, onClose, onAddSuccess }) => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/admin/add-bed', {
+            const response = await fetch(`${API_URL}/api/admin/add-bed`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...formData, admin_id: userId })

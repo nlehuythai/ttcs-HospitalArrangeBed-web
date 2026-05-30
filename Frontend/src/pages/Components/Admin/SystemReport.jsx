@@ -9,7 +9,7 @@ import {
     MdTrendingUp, MdCheckCircle, MdArrowForward
 } from "react-icons/md";
 import ExcelModal from "./HandleButton/ExcelModal";
-
+import { API_URL } from "../../../api";
 const SystemReport = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -26,7 +26,7 @@ const SystemReport = () => {
     }
     const fetchStats = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/admin/reports/${selectedMonth}`);
+            const res = await fetch(`${API_URL}/api/admin/reports/${selectedMonth}`);
             const data = await res.json();
             setStats(data);
         } catch (err) {

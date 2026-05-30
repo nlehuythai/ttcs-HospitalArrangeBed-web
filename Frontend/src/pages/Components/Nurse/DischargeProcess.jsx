@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MdCheckCircle, MdInfoOutline, MdOutlineCheckBoxOutlineBlank, MdPrint, MdAssignmentInd } from "react-icons/md";
 import { format } from 'date-fns';
 import ExportDischargeDocx from "./handleButton/ExportDischargeDocx";
+import { API_URL } from "../../../api";
 const DischargeProcess = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [patients, setPatients] = useState([]);
@@ -28,7 +29,7 @@ const DischargeProcess = () => {
             const token = sessionStorage.getItem('token');
 
 
-            const res = await fetch(`http://localhost:5000/api/patients/waiting-discharge`, {
+            const res = await fetch(`${API_URL}/api/patients/waiting-discharge`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -64,7 +65,7 @@ const DischargeProcess = () => {
         if (!isAllChecked) return;
         const token = sessionStorage.getItem('token');
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/complete-discharge/${selectedPatient.id}`, {
+            const res = await fetch(`${API_URL}/api/patients/complete-discharge/${selectedPatient.id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { MdClose, MdAssignment, MdAccessTime, MdInfoOutline, MdPeopleAlt, MdAdd, MdHistory, MdSearch } from "react-icons/md";
+import { API_URL } from "../../../api";
 const OrderEntry = () => {
     const [loading, setLoading] = useState(false);
     const [nurses, setNurses] = useState([]);
@@ -40,7 +41,7 @@ const OrderEntry = () => {
                 trang_thai: "Chờ thực hiện"
             };
             const token = sessionStorage.getItem('token');
-            const response = await fetch("http://localhost:5000/api/doctor/add-order", {
+            const response = await fetch(`${API_URL}/api/doctor/add-order`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
                 body: JSON.stringify(payload)
@@ -70,7 +71,7 @@ const OrderEntry = () => {
 
     const fecthNurse = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/users/nurses/info/${userData.khoa_id}`, {
+            const res = await fetch(`${API_URL}/api/users/nurses/info/${userData.khoa_id}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -85,7 +86,7 @@ const OrderEntry = () => {
     }
     const fetchPatients = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/inpatient`, {
+            const res = await fetch(`${API_URL}/api/patients/inpatient`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -105,7 +106,7 @@ const OrderEntry = () => {
     }
     const fetchHistoryOrder = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/doctor/history-order`, {
+            const res = await fetch(`${API_URL}/api/doctor/history-order`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",

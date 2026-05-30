@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { MdPersonOutline, MdAssignmentInd, MdLogout, MdInfoOutline, MdPerson, MdContactPage, MdMeetingRoom, MdKingBed, MdFingerprint, MdCake, MdWc, MdBloodtype, MdMonitorWeight, MdMedicalServices, MdHistory, MdCheck } from 'react-icons/md';
-
+import { API_URL } from '../../../api';
 const DoctorDischarge = () => {
     const { id: patientIdFromUrl } = useParams();
     const [patients, setPatients] = useState([]);
@@ -10,7 +10,7 @@ const DoctorDischarge = () => {
     const token = sessionStorage.getItem('token');
     const fetchInTreatment = useCallback(async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/inpatient`, {
+            const res = await fetch(`${API_URL}/api/patients/inpatient`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ const DoctorDischarge = () => {
         if (!selectedPatient) return;
         if (!window.confirm(`Xác nhận cho phép bệnh nhân ${selectedPatient.ho_ten} xuất viện?`)) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/patients/discharge-order/${selectedPatient.id}`,
+            const res = await fetch(`${API_URL}/api/patients/discharge-order/${selectedPatient.id}`,
                 {
                     method: 'PATCH',
                     headers: {

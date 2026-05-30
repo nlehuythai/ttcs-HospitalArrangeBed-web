@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MdAssignment } from "react-icons/md";
 import ActionCard from "./DetailComponents/ActionCard";
 import DetailPatients from "./DetailComponents/DetailPatients";
-
+import { API_URL } from "../../../api";
 
 const ManagePatient = () => {
     const [patients, setPatients] = useState([]);
@@ -23,7 +23,7 @@ const ManagePatient = () => {
         try {
             setLoading(true);
             const token = sessionStorage.getItem('token');
-            const response = await fetch(`http://localhost:5000/api/patients/inpatient`, {
+            const response = await fetch(`${API_URL}/api/patients/inpatient`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
