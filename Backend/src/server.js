@@ -4,11 +4,9 @@ const pool = require('./config/db');
 const app = express();
 
 app.use(cors({
-    origin: [
-        "http://localhost:5173", // Khi làm dưới máy local
-        "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app"
-    ],
-    credentials: true // Cho phép gửi cookie/token nếu có
+    origin: "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true
 }));
 app.use(express.json());
 // goij routes login
@@ -43,8 +41,8 @@ app.use('/api/admin', adminRoutes);
 
 const doctorRoutes = require('./routes/doctorRoutes');
 app.use('/api/doctor', doctorRoutes);
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
     console.log(`Server đang chạy trên cổng ${PORT}`);
 });
