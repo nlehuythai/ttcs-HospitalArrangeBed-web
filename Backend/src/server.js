@@ -3,11 +3,17 @@ const cors = require('cors');
 const pool = require('./config/db');
 const app = express();
 
-app.use(cors({
-    origin: "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: [
+            "http://localhost:5000",
+            "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app",
+        ],
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+
+        credentials: true,
+    })
+);
 app.use(express.json());
 // goij routes login
 const authRoutes = require('./routes/authRoutes');
