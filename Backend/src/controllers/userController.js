@@ -2,7 +2,8 @@ const pool = require('../config/db');
 
 const getAllUsers = async (req, res) => {
     try {
-        // Truy vấn lấy dữ liệu theo các cột trong giao diện của bạn
+        const limit = parseInt(req.query.limit) || 5;
+        const offset = parseInt(req.query.offset) || 0;
         const allUsers = await pool.query(
             `
             SELECT 
@@ -11,7 +12,7 @@ const getAllUsers = async (req, res) => {
                 u.username, 
                 u.password, 
                 u.role,  
-                k.ten_khoa, -- Giả sử tên cột trong bảng khoa là ten_khoa
+                k.ten_khoa,
                 u.status, 
                 u.email_personal, 
                 u.phone ,
@@ -20,9 +21,20 @@ const getAllUsers = async (req, res) => {
             LEFT JOIN khoa k ON u.khoa_id = k.id 
             WHERE u.status !='Khóa' AND u.role!='Admin'
             ORDER BY u.id DESC
-        `
+            LIMIT $1 OFFSET $2;
+            `, // <--- PHẢI CÓ DẤU PHẨY Ở ĐÂY
+            [limit, offset]
         );
-        res.json(allUsers.rows);
+
+        const countResult = await pool.query(
+            `SELECT COUNT(*) as total FROM users u WHERE u.status != 'Khóa' AND u.role != 'Admin'`
+        );
+        const totalUsers = parseInt(countResult.rows[0].total);
+        res.json({
+            users: allUsers.rows,
+            hasMore: offset + allUsers.rows.length < totalUsers,
+            total: totalUsers
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Lỗi máy chủ khi lấy danh sách người dùng');

@@ -6,7 +6,7 @@ const AccountManagement = () => {
 
     const [showAddForm, setShowAddForm] = useState(false);
     const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [departments, setDepartments] = useState([]);
     const [newUser, setNewUser] = useState({
         fullname: '',
@@ -17,25 +17,45 @@ const AccountManagement = () => {
         email_personal: '',
         phone: ''
     });
-    const fetchData = async () => {
+    const LIMIT = 5;
+    const [hasMore, setHasMore] = useState(true);
+    const [totalUsers, setTotalUsers] = useState(0);
+
+    const fetchData = async (currentOffset, isRefresh = false) => {
+        if (loading) return;
+        setLoading(true);
         try {
             const [userRes, deptRes] = await Promise.all([
-                fetch('http://localhost:5000/api/users'),
+                fetch(`http://localhost:5000/api/users?limit=${LIMIT}&offset=${currentOffset}`),
                 fetch('http://localhost:5000/api/departments')
             ]);
             const userData = await userRes.json();
             const deptData = await deptRes.json();
+            const incomingUsers = userData.users || [];
+            if (isRefresh) {
+                setUsers(incomingUsers);
+            } else {
 
-            setUsers(userData);
+                setUsers((prevUsers) => [...prevUsers, ...(incomingUsers)]);
+            }
+            setHasMore(userData.hasMore);
+            setTotalUsers(userData.total || 0);
             setDepartments(deptData);
+            if (deptData.length > 0 && !newUser.ten_khoa) {
+                setNewUser(prev => ({ ...prev, ten_khoa: deptData[0].id }));
+            }
             setLoading(false);
         } catch (error) {
             console.error('Lỗi:', error);
             setLoading(false);
         }
     };
+    const handleLoadMore = () => {
+        const nextOffset = users.length; // offset chính bằng số lượng người hiện tại đang hiển thị
+        fetchData(nextOffset, false);
+    };
     useEffect(() => {
-        fetchData();
+        fetchData(0, true);
     }, []);
     const handleAddUser = async (e) => {
         e.preventDefault();
@@ -89,7 +109,7 @@ const AccountManagement = () => {
                 <div>
                     <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
                         <div className="w-2 h-8 bg-teal-500 rounded-full" />
-                        Quản lý Nhân sự <span className="text-teal-500">({users.length})</span>
+                        Quản lý Nhân sự <span className="text-teal-500">({totalUsers})</span>
                     </h2>
                     <p className="text-slate-500 font-medium ml-5">Hệ thống phân quyền và điều phối chuyên khoa</p>
                 </div>
@@ -201,6 +221,42 @@ const AccountManagement = () => {
                         ))}
                     </tbody>
                 </table>
+                <div className="p-6 bg-slate-50/50 border-t border-slate-50 flex flex-col items-center justify-center gap-2">
+
+                    {/* Trường hợp 1: Vẫn còn dữ liệu để xem thêm (hasMore = true) */}
+                    {hasMore && users.length > 0 && (
+                        <button
+                            type="button"
+                            disabled={loading} // Khóa bấm nút khi đang trong tiến trình tải
+                            onClick={handleLoadMore}
+                            className={`flex items-center gap-2 font-bold text-xs px-6 py-2.5 rounded-xl shadow-sm transition-all active:scale-95 border
+                ${loading
+                                    ? "bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed" // Giao diện khi đang tải
+                                    : "bg-white hover:bg-slate-100 text-teal-600 border-slate-200"       // Giao diện bình thường
+                                }`}
+                        >
+                            {loading ? (
+                                <>
+                                    {/* Hiệu ứng vòng xoay SVG loading siêu mượt */}
+                                    <svg className="animate-spin h-4 w-4 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    ĐANG TẢI DỮ LIỆU...
+                                </>
+                            ) : (
+                                "XEM THÊM THÀNH VIÊN"
+                            )}
+                        </button>
+                    )}
+
+                    {/* Trường hợp 2: Khi không còn dữ liệu nào nữa (hasMore = false) */}
+                    {!hasMore && users.length > 0 && (
+                        <p className="text-slate-400 text-xs font-medium bg-slate-100/80 px-4 py-1.5 rounded-full">
+                            🎉 Đã hiển thị toàn bộ danh sách nhân sự
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     );
