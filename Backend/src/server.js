@@ -3,7 +3,13 @@ const cors = require('cors');
 const pool = require('./config/db');
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:5173", // Khi làm dưới máy local
+        "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app/"
+    ],
+    credentials: true // Cho phép gửi cookie/token nếu có
+}));
 app.use(express.json());
 // goij routes login
 const authRoutes = require('./routes/authRoutes');
