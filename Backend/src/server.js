@@ -6,7 +6,7 @@ const app = express();
 app.use(cors({
     origin: [
         "http://localhost:5173", // Khi làm dưới máy local
-        "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app/"
+        "https://ttcs-hospital-arrange-bed-web-8wv6.vercel.app"
     ],
     credentials: true // Cho phép gửi cookie/token nếu có
 }));
@@ -43,7 +43,8 @@ app.use('/api/admin', adminRoutes);
 
 const doctorRoutes = require('./routes/doctorRoutes');
 app.use('/api/doctor', doctorRoutes);
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Server đang chạy tại: http://localhost:${PORT}`);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server đang chạy trên cổng ${PORT}`);
 });
