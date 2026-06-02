@@ -12,7 +12,7 @@
 
 # Chặn các file log hệ thống sinh ra khi test hoặc chạy backend
 **/*.log
-
+**/*.env
 
 
 # Dành riêng cho Next.js
