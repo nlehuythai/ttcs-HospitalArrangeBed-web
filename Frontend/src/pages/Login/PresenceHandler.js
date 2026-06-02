@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { API_URL } from '../../api';
-
+import { useLocation } from "react-router-dom";
 const PresenceHandler = () => {
+    const location = useLocation();
     useEffect(() => {
         const token = sessionStorage.getItem('token');
         if (!token) return;
@@ -16,14 +17,12 @@ const PresenceHandler = () => {
                 console.error("Không thể kết nối server để báo danh.");
             }
         };
-
+        console.log("PresenceHandler đã khởi tạo!");
         sendPing();
-
-        // Cứ mỗi 30 giây gửi một lần để server biết y tá vẫn đang mở web
         const interval = setInterval(sendPing, 30000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [location.pathname]);
 
     return null;
 };
