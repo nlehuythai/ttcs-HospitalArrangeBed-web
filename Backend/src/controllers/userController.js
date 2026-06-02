@@ -104,7 +104,7 @@ const deleteUser = async (req, res) => {
 const handlePing = async (req, res) => {
     try {
         const userId = req.user.id;
-        await pool.query("UPDATE users SET last_seen = CURRENT_TIMESTAMP WHERE id = $1", [userId]);
+        await pool.query("UPDATE users SET last_seen = NOW() WHERE id = $1", [userId]);
         res.json({ success: true });
     } catch (err) {
         console.error("Lỗi khi cập nhật last_seen:", err.message);
