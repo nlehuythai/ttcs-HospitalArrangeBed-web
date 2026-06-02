@@ -13,13 +13,20 @@ const AccountManagement = () => {
         username: '',
         role: 'Bác sĩ',
         ten_khoa: '',
-        status: 'Hoạt động',
+        last_seen: '',
         email_personal: '',
         phone: ''
     });
     const LIMIT = 5;
     const [hasMore, setHasMore] = useState(true);
     const [totalUsers, setTotalUsers] = useState(0);
+    const checkOnlineStatus = (lastSeen) => {
+        if (!lastSeen) return "Offline";
+        const lastSeenTime = new Date(lastSeen).getTime();
+        const now = Date.now().getTime();
+        const diffInSeconds = (now - lastSeenTime) / 1000;
+        return diffInSeconds <= 90 ? "Online" : "Offline";
+    };
 
     const fetchData = async (currentOffset, isRefresh = false) => {
         if (loading) return;
@@ -205,9 +212,9 @@ const AccountManagement = () => {
                                 </td>
                                 <td className="px-6 py-4 text-slate-500">{user.ten_khoa}</td>
                                 <td className="px-6 py-4">
-                                    <span className="flex items-center gap-1.5 text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md w-fit text-[11px] font-bold">
+                                    <span className={`flex items-center gap-1.5 px-2 py-1 rounded-md w-fit text-[11px] font-bold ${checkOnlineStatus(user.last_seen) === 'Online' ? 'text-emerald-600 bg-emerald-50' : 'text-red-500 bg-red-200'}`}>
                                         <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                        {user.status}
+                                        {checkOnlineStatus(user.last_seen)}
                                     </span>
                                 </td>
                                 <td className="px-6 py-4 text-slate-500">{user.email_personal}</td>

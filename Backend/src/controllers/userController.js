@@ -16,6 +16,7 @@ const getAllUsers = async (req, res) => {
                 u.status, 
                 u.email_personal, 
                 u.phone ,
+                u.last_seen,
                 u.ma_nhan_vien
             FROM users u
             LEFT JOIN khoa k ON u.khoa_id = k.id 
