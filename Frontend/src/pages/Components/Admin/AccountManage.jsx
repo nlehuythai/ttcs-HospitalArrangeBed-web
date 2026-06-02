@@ -23,7 +23,7 @@ const AccountManagement = () => {
     const checkOnlineStatus = (lastSeen) => {
         if (!lastSeen) return "Offline";
         const lastSeenTime = new Date(lastSeen).getTime();
-        const now = Date.now().getTime();
+        const now = new Date().getTime();
         const diffInSeconds = (now - lastSeenTime) / 1000;
         return diffInSeconds <= 90 ? "Online" : "Offline";
     };
