@@ -6,6 +6,20 @@ const UserProfileSettings = () => {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({ type: '', text: '' });
 
+    const [passwordChecks, setPasswordChecks] = useState({
+        length: false,
+        upper: false,
+        number: false,
+        special: false
+    });
+    const validatePassword = (password) => {
+        setPasswordChecks({
+            length: password.length >= 8,
+            upper: /[A-Z]/.test(password),
+            number: /\d/.test(password),
+            special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+        });
+    };
     // Lấy thông tin user từ sessionStorage (đã lưu lúc đăng nhập)
     const user = JSON.parse(sessionStorage.getItem('user')) || {};
 
@@ -41,6 +55,9 @@ const UserProfileSettings = () => {
             if (data.success) {
                 setMessage({ type: 'success', text: 'Đổi mật khẩu thành công!' });
                 setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+                setTimeout(() => {
+                    setMessage({ type: '', text: '' });
+                }, 3000);
             } else {
 
                 setMessage({ type: 'error', text: data.message });
@@ -117,10 +134,21 @@ const UserProfileSettings = () => {
                                     type="password"
                                     required
                                     value={passwordData.newPassword}
-                                    onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
-                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-bold"
+                                    onChange={(e) => {
+                                        setPasswordData({ ...passwordData, newPassword: e.target.value });
+                                        validatePassword(e.target.value);
+                                    }}
+                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-teal-500/10 outline-none transition-all font-bold"
+                                    placeholder="Tối thiểu 8 ký tự, có chữ hoa, số, ký tự đặc biệt"
                                 />
+                                <div className="grid grid-cols-2 gap-x-2 gap-y-1 mt-2 text-[10px] font-bold">
+                                    <span className={passwordChecks.length ? "text-teal-500" : "text-slate-400"}>✓ 8+ ký tự</span>
+                                    <span className={passwordChecks.upper ? "text-teal-500" : "text-slate-400"}>✓ Chữ hoa</span>
+                                    <span className={passwordChecks.number ? "text-teal-500" : "text-slate-400"}>✓ Chữ số</span>
+                                    <span className={passwordChecks.special ? "text-teal-500" : "text-slate-400"}>✓ Ký tự đặc biệt</span>
+                                </div>
                             </div>
+
                             <div className="space-y-2">
                                 <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Xác nhận mật khẩu</label>
                                 <input
@@ -128,18 +156,16 @@ const UserProfileSettings = () => {
                                     required
                                     value={passwordData.confirmPassword}
                                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
-                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none transition-all font-bold"
+                                    className="w-full px-5 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-4 focus:ring-teal-500/10 outline-none transition-all font-bold"
                                 />
                             </div>
-
                             {message.text && (
-                                <p className={`text-[11px] font-black uppercase ${message.type === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>
+                                <p className={`text-[11px] font-black uppercase mt-2 ${message.type === 'success' ? 'text-emerald-500' : 'text-rose-500'}`}>
                                     {message.text}
                                 </p>
                             )}
-
                             <button
-                                disabled={loading}
+                                disabled={loading || !Object.values(passwordChecks).every(Boolean)}
                                 className="flex items-center justify-center gap-2 w-full py-4 bg-teal-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-600 transition-all active:scale-95 disabled:bg-slate-300 shadow-xl shadow-slate-200"
                             >
                                 <MdSave size={18} /> {loading ? 'Đang lưu...' : 'Cập nhật mật khẩu'}

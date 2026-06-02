@@ -71,6 +71,7 @@ const getnurseInfo = async (req, res) => {
              FROM users u
              JOIN khoa k ON k.id = u.khoa_id
              WHERE u.role = 'Y tá' and u.khoa_id = $1
+             AND u.last_seen > (NOW() - INTERVAL '90 seconds')
              ORDER BY u.fullname ASC`,
             [khoa_id]
         );

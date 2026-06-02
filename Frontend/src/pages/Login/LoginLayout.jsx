@@ -23,6 +23,7 @@ const LoginLayout = () => {
                 // Lưu thông tin người dùng vào sessionStorage
                 sessionStorage.setItem('user', JSON.stringify(data.user));
                 sessionStorage.setItem('isAuthenticated', 'true');
+
                 if (data.token) {
                     sessionStorage.setItem('token', data.token);
                 }

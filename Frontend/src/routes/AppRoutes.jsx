@@ -16,9 +16,11 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminBedMap from "../pages/Components/Admin/AdminBedMap"
 import UserSettings from "../pages/shared/UserSettings";
 import OrderEntry from "../pages/Components/Doctor/OrderEntry";
+import PresenceHandler from "../pages/Login/PresenceHandler";
 const AppRoutes = () => {
     return (
         <BrowserRouter>
+            <PresenceHandler />
             <Routes>
                 <Route path="/login" element={<LoginLayout />} />
                 <Route path="/" element={<Navigate to="/login" replace />} />
