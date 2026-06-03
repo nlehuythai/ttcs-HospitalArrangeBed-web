@@ -31,6 +31,20 @@ const getAllRooms = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
-
+const getCurrentInpatientsOnBed = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(`
+            SELECT bn.ho_ten, bn.nam_sinh, bn.gioi_tinh, hs.chan_doan_ban_dau
+            FROM HoSoNhapVien hs
+            JOIN BenhNhan bn ON hs.benh_nhan_id = bn.id
+            WHERE hs.giuong_id = $1 AND hs.trang_thai_ho_so = 'Đang điều trị'
+            LIMIT 1
+        `, [id]);
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: "Lỗi hệ thống" });
+    }
+};
 // Xuất tất cả các hàm liên quan đến giường
-module.exports = { getAllInfoBeds, getAllRooms };
+module.exports = { getAllInfoBeds, getAllRooms, getCurrentInpatientsOnBed };

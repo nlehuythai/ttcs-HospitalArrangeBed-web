@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import BedAssignmentModal from "./BedAssignmentModal";
 import { data } from "react-router-dom";
 import { API_URL } from "../../../api";
+import PatientInfoModal from "./handleButton/PatientInfoModal";
 const ArrangeBed = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [targetBed, setTargetBed] = useState(null);
     const [waitingPatients, setWaitingPatients] = useState([]);
-    const [beds, setBeds] = useState([]); // Khởi tạo mảng rỗng
+    const [beds, setBeds] = useState([]);
+    const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+    const [currentPatient, setCurrentPatient] = useState(null);
     const token = sessionStorage.getItem('token');
     const loadWaitingList = async () => {
         try {
@@ -72,7 +75,7 @@ const ArrangeBed = () => {
                     giuong_id: targetBed.id,
                 })
             });
-            if (response.status === 409 || response.status === 400) {
+            if (response.status === 500) {
                 alert("Giường này vừa được người khác chọn hoặc trạng thái đã thay đổi. Vui lòng tải lại trang!");
                 loadBeds(); // Cập nhật lại danh sách ngay lập tức
                 setIsModalOpen(false);
@@ -88,7 +91,24 @@ const ArrangeBed = () => {
             alert("Lỗi server!");
         }
     };
-
+    const handleBedClick = async (bed) => {
+        setTargetBed(bed);
+        if (bed.trang_thai === "Đang sử dụng") {
+            try {
+                // Cần API này ở backend: GET /api/beds/:id/current-patient
+                const res = await fetch(`${API_URL}/api/beds/${bed.id}/current-patient`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                setCurrentPatient(data);
+                setIsPatientModalOpen(true);
+            } catch (err) {
+                console.error("Lỗi lấy thông tin BN:", err);
+            }
+        } else if (bed.trang_thai === "Trống") {
+            setIsModalOpen(true);
+        }
+    };
 
     return (
         <div className="flex flex-col gap-10 p-4 animate-in fade-in duration-700">
@@ -180,10 +200,10 @@ const ArrangeBed = () => {
                             </div>
 
                             <button
-                                onClick={() => isAvailable && (setTargetBed(bed), setIsModalOpen(true))}
+                                onClick={() => handleBedClick(bed)}
                                 disabled={!isAvailable}
                                 className={`relative z-10 w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.1em] transition-all duration-300 active:scale-95 shadow-lg
-                                    ${theme.btn} ${!isAvailable && 'cursor-not-allowed opacity-80 shadow-none'}`}
+                                    ${theme.btn} ${isMaintenance ? 'cursor-not-allowed opacity-80 shadow-none' : ''}`}
                             >
                                 {isAvailable ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -192,7 +212,7 @@ const ArrangeBed = () => {
                                 ) : isMaintenance ? (
                                     'Đang khử khuẩn'
                                 ) : (
-                                    'Đã có bệnh nhân'
+                                    'Xem chi tiết bệnh nhân'
                                 )}
                             </button>
                         </div>
@@ -206,6 +226,12 @@ const ArrangeBed = () => {
                 selectedBed={targetBed}
                 patients={waitingPatients}
                 onConfirm={handleConfirmAssignment}
+            />
+            <PatientInfoModal
+                isOpen={isPatientModalOpen}
+                onClose={() => setIsPatientModalOpen(false)}
+                bed={targetBed}
+                patient={currentPatient}
             />
         </div>
     );
