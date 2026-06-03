@@ -95,8 +95,7 @@ const ArrangeBed = () => {
         setTargetBed(bed);
         if (bed.trang_thai === "Đang sử dụng") {
             try {
-                // Cần API này ở backend: GET /api/beds/:id/current-patient
-                const res = await fetch(`${API_URL}/api/beds/${bed.id}/current-patient`, {
+                const res = await fetch(`${API_URL}/api/beds/${bed.id}/patient`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -201,7 +200,7 @@ const ArrangeBed = () => {
 
                             <button
                                 onClick={() => handleBedClick(bed)}
-                                disabled={!isAvailable}
+                                disabled={isMaintenance}
                                 className={`relative z-10 w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.1em] transition-all duration-300 active:scale-95 shadow-lg
                                     ${theme.btn} ${isMaintenance ? 'cursor-not-allowed opacity-80 shadow-none' : ''}`}
                             >
