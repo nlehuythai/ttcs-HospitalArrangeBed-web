@@ -72,7 +72,12 @@ const ArrangeBed = () => {
                     giuong_id: targetBed.id,
                 })
             });
-
+            if (response.status === 409 || response.status === 400) {
+                alert("Giường này vừa được người khác chọn hoặc trạng thái đã thay đổi. Vui lòng tải lại trang!");
+                loadBeds(); // Cập nhật lại danh sách ngay lập tức
+                setIsModalOpen(false);
+                return;
+            }
             if (response.ok) {
                 alert("Xếp giường thành công!");
                 loadWaitingList();

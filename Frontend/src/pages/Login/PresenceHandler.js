@@ -17,7 +17,6 @@ const PresenceHandler = () => {
                 console.error("Không thể kết nối server để báo danh.");
             }
         };
-        console.log("PresenceHandler đã khởi tạo!");
         sendPing();
         const interval = setInterval(sendPing, 30000);
 

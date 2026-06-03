@@ -29,7 +29,18 @@ const assignBed = async (req, res) => {
     try {
         await client.query('BEGIN');
 
+        const bedRes = await client.query(
+            `SELECT trang_thai FROM Giuong WHERE id = $1 FOR UPDATE`,
+            [giuong_id]
+        );
 
+        if (bedRes.rows.length === 0) {
+            throw new Error("Giường không tồn tại");
+        }
+
+        if (bedRes.rows[0].trang_thai !== 'Trống') {
+            throw new Error("Giường này hiện không còn trống!");
+        }
         await client.query(
             `UPDATE HoSoNhapVien 
              SET giuong_id = $1, trang_thai_ho_so = 'Đang điều trị' 

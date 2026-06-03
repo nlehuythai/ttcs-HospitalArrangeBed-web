@@ -13,27 +13,29 @@ const AccountManagement = () => {
         username: '',
         role: 'Bác sĩ',
         ten_khoa: '',
-        last_seen: '',
+        status: 'Hoạt động',
         email_personal: '',
         phone: ''
     });
     const LIMIT = 5;
     const [hasMore, setHasMore] = useState(true);
     const [totalUsers, setTotalUsers] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
     const checkOnlineStatus = (lastSeen) => {
         if (!lastSeen) return "Offline";
         const lastSeenTime = new Date(lastSeen).getTime();
-        const now = new Date().getTime();
-        const diffInSeconds = (now - lastSeenTime) / 1000;
+        const nowUTC = new Date().getTime() + (7 * 60 * 60 * 1000);
+        const diffInSeconds = (nowUTC - lastSeenTime) / 1000;
         return diffInSeconds <= 90 ? "Online" : "Offline";
     };
 
     const fetchData = async (currentOffset, isRefresh = false) => {
         if (loading) return;
         setLoading(true);
+        const currentLimit = isRefresh ? Math.max(users.length, LIMIT) : LIMIT;
         try {
             const [userRes, deptRes] = await Promise.all([
-                fetch(`${API_URL}/api/users?limit=${LIMIT}&offset=${currentOffset}`),
+                fetch(`${API_URL}/api/users?limit=${currentLimit}&offset=${currentOffset}`),
                 fetch(`${API_URL}/api/departments`)
             ]);
             const userData = await userRes.json();
@@ -110,6 +112,10 @@ const AccountManagement = () => {
             }
         }
     };
+    const filteredUsers = users.filter(user =>
+        user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.ma_nhan_vien.toLowerCase().includes(searchTerm.toLowerCase())
+    );
     return (
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md sticky top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6">
@@ -184,12 +190,32 @@ const AccountManagement = () => {
                     </div>
                 </form>
             )}
+            <div className="flex gap-4 mb-6">
+                {/* Thanh tìm kiếm */}
+                <div className="flex-1 relative">
+                    <input
+                        type="text"
+                        placeholder="Tìm kiếm theo tên hoặc mã nhân viên..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full bg-white border border-slate-200 rounded-2xl px-5 py-3.5 focus:outline-none focus:ring-2 focus:ring-teal-500/20 transition-all shadow-sm"
+                    />
+                </div>
 
+                {/* Nút Fetch Data */}
+                <button
+                    onClick={() => fetchData(0, true)}
+                    className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-3.5 rounded-2xl font-bold transition-all active:scale-95 shadow-lg"
+                >
+                    Tải lại dữ liệu
+                </button>
+            </div>
             {/* Bảng dữ liệu */}
             <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-400 font-bold">
+                            <th className="px-6 py-4">Mã nhân viên</th>
                             <th className="px-6 py-4">Họ tên</th>
                             <th className="px-6 py-4">Tài khoản</th>
                             <th className="px-6 py-4">Vai trò</th>
@@ -201,8 +227,9 @@ const AccountManagement = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50 text-sm font-medium">
-                        {users.map((user, index) => (
+                        {filteredUsers.map((user, index) => (
                             <tr key={user.id} className="hover:bg-slate-50 transition-colors">
+                                <td className="px-6 py-4 text-slate-500">{user.ma_nhan_vien}</td>
                                 <td className="px-6 py-4 text-slate-900 font-bold">{user.fullname}</td>
                                 <td className="px-6 py-4 text-slate-500">{user.username}</td>
                                 <td className="px-6 py-4">
@@ -212,10 +239,20 @@ const AccountManagement = () => {
                                 </td>
                                 <td className="px-6 py-4 text-slate-500">{user.ten_khoa}</td>
                                 <td className="px-6 py-4">
-                                    <span className={`flex items-center gap-1.5 px-2 py-1 rounded-md w-fit text-[11px] font-bold ${checkOnlineStatus(user.last_seen) === 'Online' ? 'text-emerald-600 bg-emerald-50' : 'text-red-500 bg-red-200'}`}>
-                                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                        {checkOnlineStatus(user.last_seen)}
-                                    </span>
+                                    {(() => {
+                                        const status = checkOnlineStatus(user.last_seen);
+                                        const isOnline = status === 'Online';
+
+                                        return (
+                                            <span className={`flex items-center gap-1.5 px-2 py-1 rounded-full w-fit text-[11px] font-bold border 
+                                             ${isOnline
+                                                    ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                                                    : 'text-slate-500 bg-slate-100 border-slate-200'}`}>
+                                                <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></div>
+                                                {status}
+                                            </span>
+                                        );
+                                    })()}
                                 </td>
                                 <td className="px-6 py-4 text-slate-500">{user.email_personal}</td>
                                 <td className="px-6 py-4 text-slate-500">{user.phone}</td>

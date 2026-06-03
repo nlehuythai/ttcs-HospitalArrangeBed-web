@@ -44,7 +44,7 @@ const LoginLayout = () => {
             setErrorMsg('Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại.');
         }
         finally {
-            setLoading(false); // Kết thúc load cho dù thành công hay thất bại
+            setLoading(false);
         }
     }
     return (
