@@ -27,15 +27,8 @@ const login = async (req, res) => {
 
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
+            console.log('Dữ liệu người dùng từ cơ sở dữ liệu:', password, userData.password);
             const isMatch = await bcrypt.compare(password, userData.password);
-            console.log("Mật khẩu nhập vào (Plaintext):", password);
-            console.log("Mật khẩu trong DB (Hash/String):", userData.password);
-            console.log("Độ dài mật khẩu DB:", userData.password ? userData.password.length : 0);
-            console.log("Mật khẩu DB có bắt đầu bằng $2b$ không:", userData.password?.startsWith('$2b$'));
-
-            const isMatch = await bcrypt.compare(password, userData.password);
-            console.log("Kết quả so sánh:", isMatch);
-            console.log("----------------------");
             if (isMatch) {
                 const payload = {
                     id: userData.id,
