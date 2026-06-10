@@ -5,6 +5,7 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        bcrypt.hash('mat-khau-moi-cua-ban', 10).then(hash => console.log(hash));
         // Truy vấn kiểm tra tài khoản, mật khẩu và trạng thái hoạt động
         const userQuery = await pool.query(
             `SELECT 
@@ -27,7 +28,6 @@ const login = async (req, res) => {
 
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
-            bcrypt.hash('12345678', 10).then(hash => console.log(hash));
             const isMatch = await bcrypt.compare(password, userData.password);
             if (isMatch) {
                 const payload = {
