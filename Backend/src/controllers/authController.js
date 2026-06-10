@@ -5,7 +5,6 @@ const login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        bcrypt.hash('mat-khau-moi-cua-ban', 10).then(hash => console.log(hash));
         // Truy vấn kiểm tra tài khoản, mật khẩu và trạng thái hoạt động
         const userQuery = await pool.query(
             `SELECT 
@@ -42,7 +41,7 @@ const login = async (req, res) => {
                     'HospitalT&Ntoken',
                     { expiresIn: '1d' }
                 );
-                delete user.password;
+                delete userData.password;
                 res.json({
                     success: true,
                     message: 'Đăng nhập thành công',
