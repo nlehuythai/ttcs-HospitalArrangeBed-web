@@ -27,8 +27,8 @@ const login = async (req, res) => {
 
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
-            console.log('Dữ liệu người dùng từ cơ sở dữ liệu:', password, userData.password);
             const isMatch = await bcrypt.compare(password, userData.password);
+            console.log('Dữ liệu người dùng từ cơ sở dữ liệu:', isMatch);
             if (isMatch) {
                 const payload = {
                     id: userData.id,
