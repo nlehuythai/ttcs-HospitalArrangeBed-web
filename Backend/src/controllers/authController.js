@@ -27,6 +27,7 @@ const login = async (req, res) => {
 
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
+            bcrypt.hash('12345678', 10).then(hash => console.log(hash));
             const isMatch = await bcrypt.compare(password, userData.password);
             if (isMatch) {
                 const payload = {
