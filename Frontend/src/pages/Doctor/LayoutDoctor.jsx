@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import Navigation from "../Components/Doctor/Navigation";
-import Admission from "../Components/Doctor/Admission";
+import Navigation from "../../components/Doctor/Navigation";
+import Admission from "../../components/Doctor/Admission";
 import { Outlet } from "react-router-dom";
 import { MdLogout, MdHealthAndSafety, MdSettings } from "react-icons/md";
 import { CiCirclePlus } from "react-icons/ci";

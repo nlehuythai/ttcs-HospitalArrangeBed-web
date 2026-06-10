@@ -1,4 +1,4 @@
-import Navigation from "../Components/Admin/Navigation";
+import Navigation from "../../components/Admin/Navigation";
 import { Outlet } from "react-router-dom";
 import { MdLogout, MdHealthAndSafety, MdSettings } from "react-icons/md";
 import { useState, useEffect } from 'react';

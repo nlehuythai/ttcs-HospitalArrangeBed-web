@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MdAssignment } from "react-icons/md";
 import ActionCard from "./DetailComponents/ActionCard";
 import DetailPatients from "./DetailComponents/DetailPatients";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 
 const ManagePatient = () => {
     const [patients, setPatients] = useState([]);

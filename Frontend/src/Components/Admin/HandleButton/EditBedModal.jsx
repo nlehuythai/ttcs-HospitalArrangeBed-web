@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
-import { API_URL } from '../../../../api';
+import { API_URL } from '../../../api';
 const EditBedModal = ({ isOpen, onClose, selectedBed, newStatus, setNewStatus, onRefresh }) => {
     const [loading, setLoading] = useState(false);
     const token = sessionStorage.getItem('token');

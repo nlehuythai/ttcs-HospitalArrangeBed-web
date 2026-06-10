@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { MdPeople, MdTimeline, MdPersonAddAlt, MdCheckCircleOutline } from "react-icons/md";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const Overview = () => {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);

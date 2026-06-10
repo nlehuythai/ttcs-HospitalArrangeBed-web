@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MdCheckCircle, MdInfoOutline, MdOutlineCheckBoxOutlineBlank, MdPrint, MdAssignmentInd } from "react-icons/md";
 import { format } from 'date-fns';
 import ExportDischargeDocx from "./handleButton/ExportDischargeDocx";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const DischargeProcess = () => {
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [patients, setPatients] = useState([]);

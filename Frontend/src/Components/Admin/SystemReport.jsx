@@ -9,7 +9,7 @@ import {
     MdTrendingUp, MdCheckCircle, MdArrowForward
 } from "react-icons/md";
 import ExcelModal from "./HandleButton/ExcelModal";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const SystemReport = () => {
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { MdClose, MdHistory } from "react-icons/md";
-import { API_URL } from '../../../../api';
+import { API_URL } from '../../../api';
 const HistoryBedModal = ({ isOpen, onClose, bed }) => {
     const [historyData, setHistoryData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);

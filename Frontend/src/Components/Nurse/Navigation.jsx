@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 import { MdDashboard, MdPeople, MdHotel, MdDescription, MdHealthAndSafety, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const Navigation = () => {
     const tabs = [
         { id: "overview", label: "Tổng quan", icon: <MdDashboard size={20} /> },

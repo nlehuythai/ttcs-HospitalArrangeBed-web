@@ -1,6 +1,6 @@
 import { MdExpandMore, MdClose, MdPerson, MdLocalHospital } from "react-icons/md";
 import { useState, useEffect } from "react";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const Admission = ({ isOpen, onClose, onRefresh }) => {
     // const [departments, setDepartments] = useState([]);
 

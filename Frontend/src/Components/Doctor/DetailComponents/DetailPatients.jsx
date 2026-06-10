@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MdPerson, MdLocalHospital, MdHistory, MdFavorite, MdWaterDrop, MdThermostat, MdAir } from "react-icons/md";
-import { API_URL } from "../../../../api";
+import { API_URL } from "../../../api";
 const DetailPatients = (props) => {
     const { patients, selectedId } = props;
     const [history, setHistory] = useState([]);

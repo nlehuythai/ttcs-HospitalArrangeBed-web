@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MdClose, MdAdd, MdFavorite, MdWaterDrop, MdThermostat, MdAir } from 'react-icons/md';
-import { API_URL } from "../../../../api";
+import { API_URL } from "../../../api";
 const NoteProressCard = ({ isOpen, onClose, patientName, admissionId, doctorName }) => {
 
     // 2. State cho Form thêm mới

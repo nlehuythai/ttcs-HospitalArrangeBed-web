@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MdOutlineBed, MdAttachMoney, MdMeetingRoom, MdClose } from 'react-icons/md';
-import { API_URL } from '../../../../api';
+import { API_URL } from '../../../api';
 const AddBedModal = ({ isOpen, onClose, onAddSuccess }) => {
     const [formData, setFormData] = useState({
         ma_giuong: '',

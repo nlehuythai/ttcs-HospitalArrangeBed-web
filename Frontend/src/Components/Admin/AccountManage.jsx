@@ -1,7 +1,7 @@
 import React from "react";
-import { MdPersonAdd, MdEdit, MdDelete } from "react-icons/md";
+import { MdPersonAdd, MdEdit, MdDelete, MdLockReset } from "react-icons/md";
 import { useState, useEffect } from "react";
-import { API_URL } from '../../../api';
+import { API_URL } from '../../api';
 const AccountManagement = () => {
 
     const [showAddForm, setShowAddForm] = useState(false);
@@ -258,7 +258,8 @@ const AccountManagement = () => {
                                 <td className="px-6 py-4 text-slate-500">{user.phone}</td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
-                                        <button onClick={() => handleDeleteUser(user.id)} className="p-2 text-slate-400 hover:text-red-600 hover:bg-white rounded-lg shadow-sm transition-all"><MdDelete size={18} /></button>
+                                        <button title="Cấp lại mật khẩu" className="p-2 text-slate-400 hover:text-teal-500 hover:bg-white rounded-lg shadow-sm transition-all"><MdLockReset size={18} /></button>
+                                        <button onClick={() => handleDeleteUser(user.id)} title="Khóa tài khoản" className="p-2 text-slate-400 hover:text-red-600 hover:bg-white rounded-lg shadow-sm transition-all"><MdDelete size={18} /></button>
                                     </div>
                                 </td>
                             </tr>

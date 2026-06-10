@@ -6,7 +6,7 @@ import {
 import HistoryModal from "./HandleButton/HistoryBedModal";
 import EditBedModal from "./HandleButton/EditBedModal";
 import AddBedModal from "./HandleButton/AddBedModal";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const AdminBedMap = () => {
     const [beds, setBeds] = useState([]);
     const [loading, setLoading] = useState(true);

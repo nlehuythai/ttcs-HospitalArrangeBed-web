@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { MdPersonOutline, MdAssignmentInd, MdLogout, MdInfoOutline, MdPerson, MdContactPage, MdMeetingRoom, MdKingBed, MdFingerprint, MdCake, MdWc, MdBloodtype, MdMonitorWeight, MdMedicalServices, MdHistory, MdCheck } from 'react-icons/md';
-import { API_URL } from '../../../api';
+import { API_URL } from '../../api';
 const DoctorDischarge = () => {
     const { id: patientIdFromUrl } = useParams();
     const [patients, setPatients] = useState([]);

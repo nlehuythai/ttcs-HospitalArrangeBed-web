@@ -1,21 +1,21 @@
 import LayoutNurse from "../pages/Nurse/LayoutNurse";
-import Overview from "../pages/Components/Nurse/Overview";
-import TaskList from "../pages/Components/Nurse/TaskList";
-import ArrangeBed from "../pages/Components/Nurse/ArrangeBed";
-import DischargeProcessNurse from "../pages/Components/Nurse/DischargeProcess";
-import DischargeProcessDoctor from "../pages/Components/Doctor/DischargeProcess";
+import Overview from "../components/Nurse/Overview";
+import TaskList from "../Components/Nurse/TaskList";
+import ArrangeBed from "../Components/Nurse/ArrangeBed";
+import DischargeProcessNurse from "../Components/Nurse/DischargeProcess";
+import DischargeProcessDoctor from "../Components/Doctor/DischargeProcess";
 
 import LayoutDoctor from "../pages/Doctor/LayoutDoctor";
-import ManagePatient from "../pages/Components/Doctor/ManagePatient";
+import ManagePatient from "../Components/Doctor/ManagePatient";
 import LayoutAdmin from "../pages/Admin/LayoutAdmin";
-import AccountsManage from "../pages/Components/Admin/AccountManage";
-import Reports from "../pages/Components/Admin/SystemReport";
+import AccountsManage from "../Components/Admin/AccountManage";
+import Reports from "../Components/Admin/SystemReport";
 import LoginLayout from "../pages/Login/LoginLayout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-import AdminBedMap from "../pages/Components/Admin/AdminBedMap"
+import AdminBedMap from "../Components/Admin/AdminBedMap"
 import UserSettings from "../pages/shared/UserSettings";
-import OrderEntry from "../pages/Components/Doctor/OrderEntry";
+import OrderEntry from "../Components/Doctor/OrderEntry";
 import PresenceHandler from "../pages/Login/PresenceHandler";
 const AppRoutes = () => {
     return (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { MdClose, MdAssignment, MdAccessTime, MdInfoOutline, MdPeopleAlt, MdAdd, MdHistory, MdSearch } from "react-icons/md";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 const OrderEntry = () => {
     const [loading, setLoading] = useState(false);
     const [nurses, setNurses] = useState([]);

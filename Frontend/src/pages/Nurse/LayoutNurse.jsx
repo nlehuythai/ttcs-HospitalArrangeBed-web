@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Navigation from "../Components/Nurse/Navigation";
+import Navigation from "../../Components/Nurse/Navigation";
 import { MdLogout, MdHealthAndSafety, MdSettings } from "react-icons/md";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";

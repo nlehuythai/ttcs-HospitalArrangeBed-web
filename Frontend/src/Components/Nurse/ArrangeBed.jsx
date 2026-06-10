@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import BedAssignmentModal from "./BedAssignmentModal";
 import { data } from "react-router-dom";
-import { API_URL } from "../../../api";
+import { API_URL } from "../../api";
 import PatientInfoModal from "./handleButton/PatientInfoModal";
 const ArrangeBed = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
