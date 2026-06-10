@@ -1,5 +1,5 @@
 import LayoutNurse from "../pages/Nurse/LayoutNurse";
-import Overview from "../components/Nurse/Overview";
+import Overview from "../Components/Nurse/Overview";
 import TaskList from "../Components/Nurse/TaskList";
 import ArrangeBed from "../Components/Nurse/ArrangeBed";
 import DischargeProcessNurse from "../Components/Nurse/DischargeProcess";
