@@ -1,5 +1,5 @@
 const pool = require('../config/db');
-
+const brcypt = require('bcrypt');
 const getAllUsers = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 5;
@@ -76,11 +76,14 @@ const generateUserCode = async (role, khoaId) => {
 const addUser = async (req, res) => {
     const { fullname, username, password, role, khoa_id, status, email_personal, phone } = req.body;
     try {
+        const saltRounds = 10;
+        const hashedPassword = await brcypt.hash(password, saltRounds);
+        req.body.password = hashedPassword;
         const maNV = await generateUserCode(role, khoa_id);
         const newUser = await pool.query(
             `INSERT INTO users (fullname, username, password, role, khoa_id, status, email_personal, phone, ma_nhan_vien,created_at) 
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9,CURRENT_TIMESTAMP) RETURNING *`,
-            [fullname, username, password, role, khoa_id, status, email_personal, phone, maNV]
+            [fullname, username, hashedPassword, role, khoa_id, status, email_personal, phone, maNV]
         );
 
         res.json({ success: true, user: newUser.rows[0] });

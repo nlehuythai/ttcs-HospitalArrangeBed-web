@@ -1,5 +1,6 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -9,6 +10,7 @@ const login = async (req, res) => {
             `SELECT 
         u.id, 
         u.fullname, 
+        u.password,
         u.username,
         u.email_personal AS email,
         u.phone,
@@ -18,37 +20,45 @@ const login = async (req, res) => {
         u.ma_nhan_vien
      FROM users u
      LEFT JOIN khoa k ON k.id = u.khoa_id 
-     WHERE u.username = $1 
-       AND u.password = $2 
-       AND u.status = $3`,
-            [username, password, 'Hoạt động']
+     WHERE u.username = $1
+       AND u.status = $2`,
+            [username, 'Hoạt động']
         );
 
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
-            const payload = {
-                id: userData.id,
-                username: userData.username,
-                role: userData.role,
-                khoa_id: userData.khoa_id
-            };
+            const isMatch = await bcrypt.compare(password, userData.password);
+            if (isMatch) {
+                const payload = {
+                    id: userData.id,
+                    username: userData.username,
+                    role: userData.role,
+                    khoa_id: userData.khoa_id
+                };
 
-            const token = jwt.sign(
-                payload,
-                'HospitalT&Ntoken',
-                { expiresIn: '1d' }
-            );
-            res.json({
-                success: true,
-                message: 'Đăng nhập thành công',
-                token: token,
-                user: userQuery.rows[0]
-            });
+                const token = jwt.sign(
+                    payload,
+                    'HospitalT&Ntoken',
+                    { expiresIn: '1d' }
+                );
+                delete user.password;
+                res.json({
+                    success: true,
+                    message: 'Đăng nhập thành công',
+                    token: token,
+                    user: userQuery.rows[0]
+                });
 
+            } else {
+                res.status(401).json({
+                    success: false,
+                    message: 'Tài khoản hoặc mật khẩu không chính xác'
+                });
+            }
         } else {
             res.status(401).json({
                 success: false,
-                message: 'Tài khoản hoặc mật khẩu không chính xác'
+                message: 'Tài khoản không tồn tại hoặc đã bị khóa'
             });
         }
     } catch (err) {
@@ -73,24 +83,27 @@ const changePassword = async (req, res) => {
         }
 
         const user = userQuery.rows[0];
-
-        if (user.password !== currentPassword) {
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
             return res.status(400).json({
                 success: false,
                 message: 'Mật khẩu hiện tại không đúng'
             });
 
         }
-        if (currentPassword === newPassword) {
+        const isSameAsOld = await bcrypt.compare(newPassword, user.password);
+        if (isSameAsOld) {
             return res.status(400).json({
                 success: false,
                 message: 'Mật khẩu mới phải khác mật khẩu hiện tại'
             });
         }
+        const saltRounds = 10;
+        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
         // Cập nhật mật khẩu mới
         await pool.query(
             'UPDATE users SET password = $1 WHERE id = $2',
-            [newPassword, userId]
+            [hashedNewPassword, userId]
         );
 
         res.json({
