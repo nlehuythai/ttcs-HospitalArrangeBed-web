@@ -24,11 +24,11 @@ const login = async (req, res) => {
        AND u.status = $2`,
             [username, 'Hoạt động']
         );
-
+        if (userQuery.rows.length === 0) {
+            return res.status(401).json({ success: false, message: 'Tài khoản không tồn tại hoặc bị khóa' });
+        }
         if (userQuery.rows.length > 0) {
             const userData = userQuery.rows[0];
-            console.log("Kiểu dữ liệu password nhập:", typeof password); // Phải là 'string'
-            console.log("Kiểu dữ liệu password DB:", typeof userData.password);
             const isMatch = await bcrypt.compare(password, userData.password);
             if (isMatch) {
                 const payload = {
@@ -43,12 +43,13 @@ const login = async (req, res) => {
                     'HospitalT&Ntoken',
                     { expiresIn: '1d' }
                 );
-                delete userData.password;
+                const userResponse = { ...userData };
+                delete userResponse.password;
                 res.json({
                     success: true,
                     message: 'Đăng nhập thành công',
                     token: token,
-                    user: userQuery.rows[0]
+                    user: userResponse;
                 });
 
             } else {
