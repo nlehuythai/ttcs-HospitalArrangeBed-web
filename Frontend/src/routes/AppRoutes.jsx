@@ -13,7 +13,7 @@ import Reports from "../Components/Admin/SystemReport";
 import LoginLayout from "../pages/Login/LoginLayout";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
-import AdminBedMap from "../Components/Admin/AdminBedMap"
+import AdminBedMap from "../Components/Admin/AdminBedMap";
 import UserSettings from "../pages/shared/UserSettings";
 import OrderEntry from "../Components/Doctor/OrderEntry";
 import PresenceHandler from "../pages/Login/PresenceHandler";
