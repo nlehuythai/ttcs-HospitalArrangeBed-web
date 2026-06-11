@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdLogin, MdMedicalServices, MdShield, MdPersonOutline, MdLockOutline } from 'react-icons/md';
+import { MdLogin, MdMedicalServices, MdShield, MdPersonOutline, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { API_URL } from '../../api';
 const LoginLayout = () => {
     const [username, setUsername] = useState('');
@@ -8,6 +8,7 @@ const LoginLayout = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [errorMsg, setErrorMsg] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -56,7 +57,7 @@ const LoginLayout = () => {
 
                 <div className="flex flex-col items-center mb-10">
                     <div className="relative">
-                        <div className="p-5 bg-indigo-600 rounded-[2rem] shadow-xl shadow-indigo-200 text-white animate-bounce-slow">
+                        <div className="p-5 bg-teal-600 rounded-[2rem] shadow-xl shadow-teal-100 text-white animate-bounce-slow">
                             <MdMedicalServices size={40} />
                         </div>
                         <div className="absolute -bottom-2 -right-2 bg-white p-1.5 rounded-full shadow-md text-emerald-500">
@@ -66,9 +67,9 @@ const LoginLayout = () => {
 
                     <div className="mt-6 text-center">
                         <h1 className="text-3xl font-black text-slate-900 tracking-tight leading-none">
-                            T&N <span className="text-indigo-600">HOSPITAL</span>
+                            T&N <span className="text-teal-500">HOSPITAL</span>
                         </h1>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.3em] mt-3 bg-slate-100 px-4 py-1.5 rounded-full inline-block">
+                        <p className="text-teal-500 text-xs font-bold uppercase tracking-[0.3em] mt-3 bg-slate-100 px-4 py-1.5 rounded-full inline-block">
                             Hệ thống quản trị bệnh viện
                         </p>
                     </div>
@@ -83,7 +84,7 @@ const LoginLayout = () => {
                     )}
                     <div className="space-y-2">
                         <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 flex items-center gap-2">
-                            <MdPersonOutline size={16} className="text-indigo-500" /> Tên đăng nhập
+                            <MdPersonOutline size={16} className="text-teal-500" /> Tên đăng nhập
                         </label>
                         <div className="relative group">
                             <input
@@ -91,7 +92,7 @@ const LoginLayout = () => {
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 placeholder="Nhập mã nhân viên hoặc username"
-                                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 placeholder:text-slate-300 placeholder:font-medium shadow-sm"
+                                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all font-bold text-slate-700 placeholder:text-slate-300 placeholder:font-medium shadow-sm"
                                 required
                             />
                         </div>
@@ -101,18 +102,25 @@ const LoginLayout = () => {
                     <div className="space-y-2">
                         <div className="flex justify-between items-center px-1">
                             <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <MdLockOutline size={16} className="text-indigo-500" /> Mật khẩu
+                                <MdLockOutline size={16} className="text-teal-500" /> Mật khẩu
                             </label>
                         </div>
                         <div className="relative">
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="••••••••"
-                                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold text-slate-700 placeholder:text-slate-300 shadow-sm"
+                                className="w-full px-6 py-4 bg-white border border-slate-200 rounded-2xl focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-500 transition-all font-bold text-slate-700 placeholder:text-slate-300 shadow-sm"
                                 required
                             />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-teal-600 transition-colors"
+                            >
+                                {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
+                            </button>
                         </div>
                     </div>
 
@@ -120,7 +128,7 @@ const LoginLayout = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 active:scale-[0.98] disabled:bg-slate-300 flex items-center justify-center gap-3 mt-4"
+                        className="w-full py-4 bg-teal-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-teal-600 transition-all shadow-xl shadow-indigo-200 active:scale-[0.98] disabled:bg-slate-300 flex items-center justify-center gap-3 mt-4"
                     >
                         {loading ? (
                             <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
