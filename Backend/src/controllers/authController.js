@@ -135,7 +135,7 @@ const forgotPassword = async (req, res) => {
 
     try {
         // 1. Kiểm tra email có tồn tại không
-        const userCheck = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+        const userCheck = await pool.query('SELECT id FROM users WHERE email_personal= $1', [email]);
         if (userCheck.rowCount === 0) {
             return res.status(404).json({ success: false, message: 'Email không tồn tại trong hệ thống!' });
         }
@@ -199,7 +199,7 @@ const verifyAndReset = async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
 
         // 3. Cập nhật mật khẩu vào bảng users
-        await pool.query('UPDATE users SET password = $1 WHERE email = $2', [hashedPassword, email]);
+        await pool.query('UPDATE users SET password = $1 WHERE email_personal = $2', [hashedPassword, email]);
 
         // 4. Xóa bản ghi OTP đã dùng
         await pool.query('DELETE FROM password_resets WHERE email = $1', [email]);
