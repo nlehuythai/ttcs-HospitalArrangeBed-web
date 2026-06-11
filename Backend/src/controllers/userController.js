@@ -133,12 +133,15 @@ const handleResetPassword = async (req, res) => {
 const handleUpdateProfile = async (req, res) => {
     const { fullname, email_personal, phone } = req.body;
     const userId = req.user.id;
-    if (!fullname || !email_personal || !phone) {
-        return res.status(400).json({ success: false, message: "Thiếu fullname, email_personal hoặc phone" });
-    }
     try {
         await pool.query(
-            `UPDATE users SET fullname = $1, email_personal = $2, phone = $3 WHERE id = $4`,
+            `UPDATE users 
+            SET 
+                fullname = COALESCE($1, fullname),
+                email_personal = COALESCE($2, email_personal),
+                phone = COALESCE($3, phone)
+            WHERE id = $4
+            RETURNING *;`,
             [fullname, email_personal, phone, userId]
         );
         res.json({ success: true, message: 'Thông tin cá nhân đã được cập nhật' });
