@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdLogin, MdMedicalServices, MdShield, MdPersonOutline, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { API_URL } from '../../api';
+import ForgotPasswordModal from '../../Components/Auth/ForgotPasswordModal';
 const LoginLayout = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -9,6 +10,7 @@ const LoginLayout = () => {
     const navigate = useNavigate();
     const [errorMsg, setErrorMsg] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [showForgotModal, setShowForgotModal] = useState(false);
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -139,7 +141,15 @@ const LoginLayout = () => {
                         )}
                     </button>
                 </form>
+                <button
+                    type="button"
+                    onClick={() => setShowForgotModal(true)}
+                    className="text-xs font-bold text-indigo-600 hover:underline mt-2 block w-full text-right"
+                >
+                    Quên mật khẩu?
+                </button>
 
+                {/* Gọi Modal tại đây */}
                 {/* Footer Footer */}
                 <div className="mt-10 pt-8 border-t border-slate-100 text-center">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
@@ -148,8 +158,12 @@ const LoginLayout = () => {
                     </p>
                 </div>
             </div>
+            <ForgotPasswordModal
+                isOpen={showForgotModal}
+                onClose={() => setShowForgotModal(false)}
+            />
 
-        </div>
+        </div >
     );
 }
 export default LoginLayout;

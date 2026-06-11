@@ -1,6 +1,8 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -118,5 +120,93 @@ const changePassword = async (req, res) => {
         res.status(500).send('Lỗi máy chủ hệ thống');
     }
 };
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'nlht081005@gmail.com', // Email của bạn
+        pass: 'wxrn circ aiwa jfvu'    // Mật khẩu ứng dụng 16 ký tự
+    }
+});
 
-module.exports = { login, changePassword };
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // 1. Kiểm tra email có tồn tại không
+        const userCheck = await pool.query('SELECT id FROM users WHERE email = $1', [email]);
+        if (userCheck.rowCount === 0) {
+            return res.status(404).json({ success: false, message: 'Email không tồn tại trong hệ thống!' });
+        }
+
+        // 2. Tạo mã OTP ngẫu nhiên (6 số)
+        const otp = crypto.randomInt(100000, 999999).toString();
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // Hết hạn sau 5 phút
+
+        // 3. Lưu OTP vào DB
+        // Lưu ý: Bạn cần tạo bảng 'password_resets' trước hoặc lưu vào một bảng tạm
+        await pool.query(
+            `INSERT INTO password_resets (email, otp, expires_at) 
+             VALUES ($1, $2, $3) 
+             ON CONFLICT (email) DO UPDATE SET otp = $2, expires_at = $3`,
+            [email, otp, expiresAt]
+        );
+
+        // 4. Gửi email
+        await transporter.sendMail({
+            from: '"T&N Hospital" <nlht081005@gmail.com>',
+            to: email,
+            subject: 'Mã xác thực khôi phục mật khẩu',
+            text: `Chào bạn, mã OTP của bạn là: ${otp}. Mã có hiệu lực trong 5 phút.`
+        });
+
+        res.json({ success: true, message: 'Mã OTP đã được gửi về email của bạn!' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ khi gửi email!' });
+    }
+};
+const verifyAndReset = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    try {
+        // 1. Kiểm tra OTP và thời hạn
+        const result = await pool.query(
+            `SELECT otp, expires_at FROM password_resets WHERE email = $1`,
+            [email]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(400).json({ success: false, message: 'Yêu cầu không tồn tại!' });
+        }
+
+        const { otp: storedOtp, expires_at } = result.rows[0];
+
+        // Kiểm tra mã OTP
+        if (storedOtp !== otp) {
+            return res.status(400).json({ success: false, message: 'Mã OTP không chính xác!' });
+        }
+
+        // Kiểm tra thời hạn
+        if (new Date() > new Date(expires_at)) {
+            return res.status(400).json({ success: false, message: 'Mã OTP đã hết hạn!' });
+        }
+
+        // 2. Hash mật khẩu mới
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+        // 3. Cập nhật mật khẩu vào bảng users
+        await pool.query('UPDATE users SET password = $1 WHERE email = $2', [hashedPassword, email]);
+
+        // 4. Xóa bản ghi OTP đã dùng
+        await pool.query('DELETE FROM password_resets WHERE email = $1', [email]);
+
+        res.json({ success: true, message: 'Đổi mật khẩu thành công!' });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ!' });
+    }
+};
+module.exports = { login, changePassword, forgotPassword, verifyAndReset, };
