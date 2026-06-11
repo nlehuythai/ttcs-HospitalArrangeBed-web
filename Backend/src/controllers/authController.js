@@ -1,8 +1,8 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const brevo = require('@getbrevo/brevo');
 const crypto = require('crypto');
+const brevo = require('@getbrevo/brevo');
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -10,20 +10,20 @@ const login = async (req, res) => {
         // Truy vấn kiểm tra tài khoản, mật khẩu và trạng thái hoạt động
         const userQuery = await pool.query(
             `SELECT 
-        u.id, 
-        u.fullname, 
-        u.password,
-        u.username,
-        u.email_personal AS email,
-        u.phone,
-        u.role, 
-        u.khoa_id, 
-        k.ten_khoa ,
-        u.ma_nhan_vien
-     FROM users u
-     LEFT JOIN khoa k ON k.id = u.khoa_id 
-     WHERE u.username = $1
-       AND u.status = $2`,
+            u.id, 
+            u.fullname, 
+            u.password,
+            u.username,
+            u.email_personal AS email,
+            u.phone,
+            u.role, 
+            u.khoa_id, 
+            k.ten_khoa ,
+            u.ma_nhan_vien
+            FROM users u
+            LEFT JOIN khoa k ON k.id = u.khoa_id 
+            WHERE u.username = $1
+            AND u.status = $2`,
             [username, 'Hoạt động']
         );
         if (userQuery.rows.length === 0) {
@@ -123,7 +123,6 @@ const changePassword = async (req, res) => {
 const apiInstance = new brevo.TransactionalEmailsApi();
 const apiKey = apiInstance.authentications['apiKey'];
 apiKey.apiKey = process.env.BREVO_API_KEY;
-
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
