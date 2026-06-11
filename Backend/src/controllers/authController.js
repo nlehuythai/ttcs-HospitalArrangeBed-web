@@ -2,9 +2,10 @@ const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { TransactionalEmailsApi, SendSmtpEmail } = require('@getbrevo/brevo');
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.setApiKey(0, process.env.BREVO_API_KEY);
+const brevo = require('brevo');
+const apiInstance = new brevo.TransactionalEmailsApi();
+const apiKey = apiInstance.authentications['apiKey'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -148,7 +149,7 @@ const forgotPassword = async (req, res) => {
 
         // 4. Gửi email
         // 4. Gửi email qua Brevo API (Thay cho nodemailer)
-        let sendSmtpEmail = new SendSmtpEmail();
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
         sendSmtpEmail.subject = "Mã xác thực khôi phục mật khẩu";
         sendSmtpEmail.sender = { "name": "T&N Hospital", "email": "nlht081005@gmail.com" };
         sendSmtpEmail.to = [{ "email": email }];
