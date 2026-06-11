@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { TransactionalEmailsApi, SendSmtpEmail } = require('@getbrevo/brevo');
+const apiInstance = new TransactionalEmailsApi();
+apiInstance.setApiKey(0, process.env.BREVO_API_KEY);
 const login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -120,8 +122,7 @@ const changePassword = async (req, res) => {
         res.status(500).send('Lỗi máy chủ hệ thống');
     }
 };
-const apiInstance = new TransactionalEmailsApi();
-apiInstance.setApiKey(0, process.env.BREVO_API_KEY);
+
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -151,7 +152,7 @@ const forgotPassword = async (req, res) => {
         sendSmtpEmail.subject = "Mã xác thực khôi phục mật khẩu";
         sendSmtpEmail.sender = { "name": "T&N Hospital", "email": "nlht081005@gmail.com" };
         sendSmtpEmail.to = [{ "email": email }];
-        sendSmtpEmail.htmlContent = `<html><body><p>Chào bạn, mã OTP của bạn là: <strong>${otp}</strong>. Mã có hiệu lực trong 5 phút.</p></body></html>`;
+        sendSmtpEmail.htmlContent = `<html><body><p>Chào bạn, mã OTP của bạn là: <strong>${otp}</strong>.</p></body></html>`;
 
         await apiInstance.sendTransmtpEmail(sendSmtpEmail);
 
