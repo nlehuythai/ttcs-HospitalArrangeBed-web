@@ -108,7 +108,7 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                             required
                         />
                         <button type="submit" disabled={loading} className="w-full py-3 bg-teal-600 text-white rounded-2xl font-bold hover:bg-teal-700">
-                            {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
+                            {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu thành công"}
                         </button>
                     </form>
                 )}

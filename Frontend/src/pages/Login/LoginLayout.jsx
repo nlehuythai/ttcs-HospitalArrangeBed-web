@@ -154,7 +154,7 @@ const LoginLayout = () => {
                 <div className="mt-10 pt-8 border-t border-slate-100 text-center">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest leading-relaxed">
                         Thiết bị này được bảo mật bởi <br />
-                        <span className="text-slate-600">Phòng Công Nghệ Thông Tin - Bệnh Viện</span>
+                        <span className="text-slate-600">Phòng Công Nghệ Thông Tin - Bệnh Viện T&N</span>
                     </p>
                 </div>
             </div>
