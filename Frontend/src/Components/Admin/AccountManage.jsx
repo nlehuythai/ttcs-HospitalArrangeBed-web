@@ -2,6 +2,7 @@ import React from "react";
 import { MdPersonAdd, MdEdit, MdDelete, MdLockReset } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { API_URL } from '../../api';
+import ResetPasswordModal from "./HandleButton/ResetPasswordModal";
 const AccountManagement = () => {
 
     const [showAddForm, setShowAddForm] = useState(false);
@@ -21,6 +22,8 @@ const AccountManagement = () => {
     const [hasMore, setHasMore] = useState(true);
     const [totalUsers, setTotalUsers] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
     const checkOnlineStatus = (lastSeen) => {
         if (!lastSeen) return "Offline";
         const lastSeenTime = new Date(lastSeen).getTime();
@@ -111,6 +114,10 @@ const AccountManagement = () => {
                 alert('Đã xảy ra lỗi khi xóa tài khoản');
             }
         }
+    };
+    const handleOpenResetModal = async (user) => {
+        setSelectedUser(user);
+        setIsResetModalOpen(true);
     };
     const filteredUsers = users.filter(user =>
         user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -211,7 +218,7 @@ const AccountManagement = () => {
                 </button>
             </div>
             {/* Bảng dữ liệu */}
-            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
                         <tr className="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-400 font-bold">
@@ -258,7 +265,7 @@ const AccountManagement = () => {
                                 <td className="px-6 py-4 text-slate-500">{user.phone}</td>
                                 <td className="px-6 py-4">
                                     <div className="flex justify-center gap-2">
-                                        <button title="Cấp lại mật khẩu" className="p-2 text-slate-400 hover:text-teal-500 hover:bg-white rounded-lg shadow-sm transition-all"><MdLockReset size={18} /></button>
+                                        <button onClick={() => handleOpenResetModal(user)} title="Cấp lại mật khẩu" className="p-2 text-slate-400 hover:text-teal-500 hover:bg-white rounded-lg shadow-sm transition-all"><MdLockReset size={18} /></button>
                                         <button onClick={() => handleDeleteUser(user.id)} title="Khóa tài khoản" className="p-2 text-slate-400 hover:text-red-600 hover:bg-white rounded-lg shadow-sm transition-all"><MdDelete size={18} /></button>
                                     </div>
                                 </td>
@@ -301,6 +308,10 @@ const AccountManagement = () => {
                             🎉 Đã hiển thị toàn bộ danh sách nhân sự
                         </p>
                     )}
+                    <ResetPasswordModal
+                        isOpen={isResetModalOpen}
+                        onClose={() => setIsResetModalOpen(false)}
+                        user={selectedUser} />
                 </div>
             </div>
         </div>

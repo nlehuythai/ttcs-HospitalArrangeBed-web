@@ -115,4 +115,19 @@ const handlePing = async (req, res) => {
         res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
     }
 };
-module.exports = { getAllUsers, addUser, deleteUser, handlePing };
+const handleResetPassword = async (req, res) => {
+    const { userId, newPassword } = req.body;
+    if (!userId || !newPassword) {
+        return res.status(400).json({ success: false, message: "Thiếu userId hoặc newPassword" });
+    }
+    try {
+        const saltRounds = 10;
+        const hashedPassword = await brcypt.hash(newPassword, saltRounds);
+        await pool.query(`UPDATE users SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
+        res.json({ success: true, message: 'Mật khẩu đã được cập nhật' });
+    } catch (err) {
+        console.error("Lỗi khi cập nhật mật khẩu:", err.message);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+    }
+};
+module.exports = { getAllUsers, addUser, deleteUser, handlePing, handleResetPassword };
