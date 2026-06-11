@@ -159,7 +159,7 @@ const forgotPassword = async (req, res) => {
         sendSmtpEmail.to = [{ "email": email }];
         sendSmtpEmail.htmlContent = `<html><body><p>Chào bạn, mã OTP của bạn là: <strong>${otp}</strong>.</p></body></html>`;
 
-        await apiInstance.sendTransmtpEmail(sendSmtpEmail);
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
 
         res.json({ success: true, message: 'Mã OTP đã được gửi về email của bạn!' });
     } catch (err) {
