@@ -124,7 +124,7 @@ const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'nlht081005@gmail.com', // Email của bạn
-        pass: 'wxrn circ aiwa jfvu'    // Mật khẩu ứng dụng 16 ký tự
+        pass: 'wxrncircaiwajfvu'    // Mật khẩu ứng dụng 16 ký tự
     }
 });
 

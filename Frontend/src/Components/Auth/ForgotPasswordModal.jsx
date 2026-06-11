@@ -43,8 +43,8 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
 
                 {step === 1 ? (
                     <div className="space-y-4">
-                        <input onClick={handleSendOtp} type="email" placeholder="Nhập email đăng ký" className="w-full p-4 border rounded-2xl font-bold" onChange={(e) => setEmail(e.target.value)} />
-                        <button disabled={loading} className="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl font-bold">
+                        <input type="email" placeholder="Nhập email đăng ký" className="w-full p-4 border rounded-2xl font-bold" onChange={(e) => setEmail(e.target.value)} />
+                        <button onClick={handleSendOtp} disabled={loading} className="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl font-bold">
                             {loading ? "Đang gửi..." : "Gửi mã OTP"}
                         </button>
                     </div>
