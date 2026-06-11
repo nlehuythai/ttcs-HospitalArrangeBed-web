@@ -86,7 +86,6 @@ const getnurseInfo = async (req, res) => {
              ORDER BY u.fullname ASC`,
             [khoa_id]
         );
-        res.json(result.rows);
         if (result.rows.length === 0) {
             return res.json([]);
         }
@@ -94,7 +93,9 @@ const getnurseInfo = async (req, res) => {
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ error: "Lỗi khi lấy danh sách y tá" });
+        if (!res.headersSent) {
+            return res.status(500).json({ error: "Lỗi khi lấy danh sách y tá" });
+        }
     }
 };
 
