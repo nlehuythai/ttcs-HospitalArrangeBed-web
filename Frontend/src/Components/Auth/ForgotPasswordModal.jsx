@@ -77,8 +77,10 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                     <form onSubmit={handleSendOtp} className="space-y-4">
                         <input
                             type="email"
+                            autoComplete="off"
                             placeholder="Nhập email của bạn"
                             className="w-full p-4 border rounded-2xl font-bold"
+                            value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
@@ -89,16 +91,20 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
                 ) : (
                     <form onSubmit={handleResetPassword} className="space-y-4">
                         <input
+                            autoComplete="one-time-code"
                             placeholder="Nhập mã OTP"
                             className="w-full p-4 border rounded-2xl font-bold"
                             onChange={e => setOtp(e.target.value)}
+                            value={otp}
                             required
                         />
                         <input
                             type="password"
+                            autoComplete="new-password"
                             placeholder="Mật khẩu mới"
                             className="w-full p-4 border rounded-2xl font-bold"
                             onChange={e => setNewPassword(e.target.value)}
+                            value={newPassword}
                             required
                         />
                         <button type="submit" disabled={loading} className="w-full py-3 bg-teal-600 text-white rounded-2xl font-bold hover:bg-teal-700">

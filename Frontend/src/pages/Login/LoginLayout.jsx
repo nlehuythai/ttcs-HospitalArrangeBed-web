@@ -130,7 +130,7 @@ const LoginLayout = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full py-4 bg-teal-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-teal-600 transition-all shadow-xl shadow-indigo-200 active:scale-[0.98] disabled:bg-slate-300 flex items-center justify-center gap-3 mt-4"
+                        className="w-full py-4 bg-teal-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl hover:bg-teal-600 transition-all shadow-xl shadow-slate-300 active:scale-[0.98] disabled:bg-slate-300 flex items-center justify-center gap-3 mt-4"
                     >
                         {loading ? (
                             <div className="w-5 h-5 border-3 border-white/30 border-t-white rounded-full animate-spin" />
@@ -144,7 +144,7 @@ const LoginLayout = () => {
                 <button
                     type="button"
                     onClick={() => setShowForgotModal(true)}
-                    className="text-xs font-bold text-indigo-600 hover:underline mt-2 block w-full text-right"
+                    className="text-xs font-bold text-teal-600 hover:underline mt-4 block w-full text-right hover:text-teal-700"
                 >
                     Quên mật khẩu?
                 </button>
