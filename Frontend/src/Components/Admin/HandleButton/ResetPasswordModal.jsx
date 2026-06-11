@@ -3,13 +3,13 @@ import { MdLockReset, MdDelete } from "react-icons/md";
 import { API_URL } from "../../../api";
 const ResetPasswordModal = ({ isOpen, onClose, user }) => {
     const [newPassword, setNewPassword] = useState("");
-
     if (!isOpen) return null;
     const handleResetPassword = async (newPassword) => {
+        const token = sessionStorage.getItem('token');
         try {
             const response = await fetch(`${API_URL}/api/users/reset-password`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                 body: JSON.stringify({ userId: user.id, newPassword }) // 'user' là đối tượng người dùng hiện tại
             });
 
