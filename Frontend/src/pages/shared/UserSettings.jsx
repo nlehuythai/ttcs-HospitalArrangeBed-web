@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MdPerson, MdLock, MdVerifiedUser, MdOutlineBadge, MdEmail, MdApartment, MdSave, MdPhone } from 'react-icons/md';
+import { MdPerson, MdLock, MdVerifiedUser, MdOutlineBadge, MdEmail, MdApartment, MdSave, MdPhone, MdEdit, MdCancel } from 'react-icons/md';
 import { API_URL } from '../../api';
 const UserProfileSettings = () => {
     const [activeTab, setActiveTab] = useState('profile');
@@ -20,8 +20,8 @@ const UserProfileSettings = () => {
             special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
         });
     };
-    // Lấy thông tin user từ sessionStorage (đã lưu lúc đăng nhập)
-    const user = JSON.parse(sessionStorage.getItem('user')) || {};
+    const [userInfo, setUserInfo] = useState(JSON.parse(sessionStorage.getItem('user')) || {});
+    const [isEditing, setIsEditing] = useState(false);
 
     const [passwordData, setPasswordData] = useState({
         currentPassword: '',
@@ -45,7 +45,7 @@ const UserProfileSettings = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    userId: user.id,
+                    userId: userInfo.id,
                     currentPassword: passwordData.currentPassword,
                     newPassword: passwordData.newPassword
                 })
@@ -69,6 +69,37 @@ const UserProfileSettings = () => {
             setLoading(false);
         }
     };
+    const handleUpdateProfile = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const response = await fetch(`${API_URL}/api/users/update`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                },
+                body: JSON.stringify({
+                    fullname: userInfo.fullname,
+                    email: userInfo.email,
+                    phone: userInfo.phone
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                sessionStorage.setItem('user', JSON.stringify(userInfo));
+                setMessage({ type: 'success', text: 'Cập nhật thành công!' });
+                setIsEditing(false);
+            } else {
+                setMessage({ type: 'error', text: data.message });
+            }
+        } catch (error) {
+            setMessage({ type: 'error', text: 'Lỗi kết nối server!' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     return (
         <div className="max-w-4xl mx-auto p-6 animate-in fade-in duration-500">
@@ -99,22 +130,44 @@ const UserProfileSettings = () => {
                 <div className="flex-1 p-8">
                     {activeTab === 'profile' ? (
                         <div className="space-y-6">
-                            <div className="flex items-center gap-4 mb-8">
-                                <div className="w-20 h-20 bg-teal-100 rounded-[2rem] flex items-center justify-center text-teal-600 text-3xl font-black">
-                                    {user.fullname?.charAt(0)}
+                            <div className="flex justify-between items-center mb-8">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-20 h-20 bg-teal-100 rounded-[2rem] flex items-center justify-center text-teal-600 text-3xl font-black">{userInfo.fullname?.charAt(0)}</div>
+                                    <div>
+                                        <h3 className="text-xl font-black text-slate-800">{userInfo.fullname}</h3>
+                                        <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">{userInfo.role}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-xl font-black text-slate-800">{user.fullname}</h3>
-                                    <p className="text-slate-400 font-bold text-xs uppercase tracking-widest">{user.role}</p>
-                                </div>
+                                {!isEditing ? (
+                                    <button onClick={() => setIsEditing(true)} className="flex items-center gap-2 text-teal-600 bg-teal-50 px-4 py-2 rounded-xl font-bold text-xs hover:bg-teal-100 transition-all">
+                                        <MdEdit size={16} /> CHỈNH SỬA
+                                    </button>
+                                ) : (
+                                    <button onClick={() => setIsEditing(false)} className="flex items-center gap-2 text-rose-600 bg-rose-50 px-4 py-2 rounded-xl font-bold text-xs hover:bg-rose-100 transition-all">
+                                        <MdCancel size={16} /> HỦY
+                                    </button>
+                                )}
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <InfoItem icon={<MdApartment />} label="Khoa/Phòng" value={user.ten_khoa || 'N/A'} />
-                                <InfoItem icon={<MdVerifiedUser />} label="Mã nhân viên" value={`${user.ma_nhan_vien}`} />
-                                <InfoItem icon={<MdEmail />} label="Email" value={user.email || 'Chưa cập nhật'} />
-                                <InfoItem icon={<MdPhone />} label="Số điện thoại" value={user.phone || 'Chưa cập nhật'} />
-                            </div>
+                            {isEditing ? (
+                                <form onSubmit={handleUpdateProfile} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <EditInput label="Họ tên" value={userInfo.fullname} onChange={(v) => setUserInfo({ ...userInfo, fullname: v })} />
+                                    <EditInput label="Email" value={userInfo.email} onChange={(v) => setUserInfo({ ...userInfo, email: v })} />
+                                    <EditInput label="Số điện thoại" value={userInfo.phone} onChange={(v) => setUserInfo({ ...userInfo, phone: v })} />
+                                    <div className="col-span-full mt-4">
+                                        <button disabled={loading} className="w-full py-3 bg-teal-500 text-white rounded-2xl font-bold hover:bg-teal-600 transition-all">
+                                            {loading ? 'Đang lưu...' : 'Lưu thông tin thay đổi'}
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <InfoItem icon={<MdApartment />} label="Khoa/Phòng" value={userInfo.ten_khoa || 'N/A'} />
+                                    <InfoItem icon={<MdVerifiedUser />} label="Mã nhân viên" value={`${userInfo.ma_nhan_vien}`} />
+                                    <InfoItem icon={<MdEmail />} label="Email" value={userInfo.email || 'Chưa cập nhật'} />
+                                    <InfoItem icon={<MdPhone />} label="Số điện thoại" value={userInfo.phone || 'Chưa cập nhật'} />
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <form onSubmit={handlePasswordChange} className="space-y-5 max-w-sm">
@@ -187,5 +240,10 @@ const InfoItem = ({ icon, label, value }) => (
         <p className="font-bold text-slate-700 ml-6">{value}</p>
     </div>
 );
-
+const EditInput = ({ label, value, onChange }) => (
+    <div className="space-y-1">
+        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">{label}</label>
+        <input value={value} onChange={(e) => onChange(e.target.value)} className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-teal-500 font-bold text-slate-700" />
+    </div>
+);
 export default UserProfileSettings;

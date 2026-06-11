@@ -10,4 +10,5 @@ router.get('/nurses/info/:khoa_id', nurseController.getnurseInfo);
 router.patch('/delete/:id', userController.deleteUser);
 router.post('/ping', verifyToken, userController.handlePing);
 router.patch('/reset-password', verifyToken, userController.handleResetPassword);
+router.patch('/update', verifyToken, userController.handleUpdateProfile);
 module.exports = router;

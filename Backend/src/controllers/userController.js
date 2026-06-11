@@ -130,4 +130,21 @@ const handleResetPassword = async (req, res) => {
         res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
     }
 };
-module.exports = { getAllUsers, addUser, deleteUser, handlePing, handleResetPassword };
+const handleUpdateProfile = async (req, res) => {
+    const { fullname, email_personal, phone } = req.body;
+    const userId = req.user.id;
+    if (!fullname || !email_personal || !phone) {
+        return res.status(400).json({ success: false, message: "Thiếu fullname, email_personal hoặc phone" });
+    }
+    try {
+        await pool.query(
+            `UPDATE users SET fullname = $1, email_personal = $2, phone = $3 WHERE id = $4`,
+            [fullname, email_personal, phone, userId]
+        );
+        res.json({ success: true, message: 'Thông tin cá nhân đã được cập nhật' });
+    } catch (err) {
+        console.error("Lỗi khi cập nhật thông tin cá nhân:", err.message);
+        res.status(500).json({ success: false, message: 'Lỗi máy chủ' });
+    }
+};
+module.exports = { getAllUsers, addUser, deleteUser, handlePing, handleResetPassword, handleUpdateProfile };
