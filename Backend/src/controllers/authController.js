@@ -122,8 +122,8 @@ const changePassword = async (req, res) => {
 };
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         user: 'nlht081005@gmail.com', // Email của bạn
         pass: 'wxrncircaiwajfvu'    // Mật khẩu ứng dụng 16 ký tự
