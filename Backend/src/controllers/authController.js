@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const nodemailer = require('nodemailer');
+const brevo = require('@getbrevo/brevo');
 const crypto = require('crypto');
 const login = async (req, res) => {
     const { username, password } = req.body;
@@ -120,15 +120,9 @@ const changePassword = async (req, res) => {
         res.status(500).send('Lỗi máy chủ hệ thống');
     }
 };
-const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'nlht081005@gmail.com', // Email của bạn
-        pass: 'wxrncircaiwajfvu'    // Mật khẩu ứng dụng 16 ký tự
-    }
-});
+const apiInstance = new brevo.TransactionalEmailsApi();
+const apiKey = apiInstance.authentications['apiKey'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
 
 const forgotPassword = async (req, res) => {
     const { email } = req.body;
@@ -154,15 +148,16 @@ const forgotPassword = async (req, res) => {
         );
 
         // 4. Gửi email
-        await transporter.sendMail({
-            from: '"T&N Hospital" <nlht081005@gmail.com>',
-            to: email,
-            subject: 'Mã xác thực khôi phục mật khẩu',
-            text: `Chào bạn, mã OTP của bạn là: ${otp}. Mã có hiệu lực trong 5 phút.`
-        });
+        // 4. Gửi email qua Brevo API (Thay cho nodemailer)
+        let sendSmtpEmail = new brevo.SendSmtpEmail();
+        sendSmtpEmail.subject = "Mã xác thực khôi phục mật khẩu";
+        sendSmtpEmail.sender = { "name": "T&N Hospital", "email": "nlht081005@gmail.com" };
+        sendSmtpEmail.to = [{ "email": email }];
+        sendSmtpEmail.htmlContent = `<html><body><p>Chào bạn, mã OTP của bạn là: <strong>${otp}</strong>. Mã có hiệu lực trong 5 phút.</p></body></html>`;
+
+        await apiInstance.sendTransmtpEmail(sendSmtpEmail);
 
         res.json({ success: true, message: 'Mã OTP đã được gửi về email của bạn!' });
-
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, message: 'Lỗi máy chủ khi gửi email!' });
