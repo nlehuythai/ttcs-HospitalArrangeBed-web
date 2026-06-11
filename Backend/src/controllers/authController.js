@@ -5,7 +5,10 @@ const crypto = require('crypto');
 const brevo = require('@getbrevo/brevo');
 const apiInstance = new brevo.TransactionalEmailsApi();
 const apiKey = apiInstance.authentications['apiKey'];
-apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
+apiInstance.setApiKey(
+    brevo.TransactionalEmailsApiApiKeys.apiKey,
+    process.env.BREVO_API_KEY
+);
 console.log("Brevo structure:", Object.keys(brevo));
 const login = async (req, res) => {
     const { username, password } = req.body;
