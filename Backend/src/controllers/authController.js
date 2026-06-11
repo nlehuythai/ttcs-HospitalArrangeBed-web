@@ -121,7 +121,9 @@ const changePassword = async (req, res) => {
     }
 };
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
         user: 'nlht081005@gmail.com', // Email của bạn
         pass: 'wxrncircaiwajfvu'    // Mật khẩu ứng dụng 16 ký tự
@@ -205,6 +207,7 @@ const verifyAndReset = async (req, res) => {
         res.json({ success: true, message: 'Đổi mật khẩu thành công!' });
 
     } catch (err) {
+        console.error("--- CHI TIẾT LỖI GỬI EMAIL ---");
         console.error(err);
         res.status(500).json({ success: false, message: 'Lỗi máy chủ!' });
     }
