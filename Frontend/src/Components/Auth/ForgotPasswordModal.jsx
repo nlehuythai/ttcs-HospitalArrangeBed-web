@@ -8,56 +8,108 @@ const ForgotPasswordModal = ({ isOpen, onClose }) => {
     const [otp, setOtp] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const handleSendOtp = async () => {
+    const [message, setMessage] = useState('');
+    const handleSendOtp = async (e) => {
+        e.preventDefault();
         setLoading(true);
-        const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
-        });
-        const data = await res.json();
-        setLoading(false);
-        if (data.success) setStep(2);
-        else alert(data.message);
+        try {
+            const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            setLoading(false);
+            if (data.success) {
+                setStep(2);
+                setMessage("Mã OTP đã được gửi về email của bạn!");
+            }
+            else {
+                setMessage(data.message || "Email không tồn tại.");
+                alert(data.message);
+            }
+        } catch {
+            setMessage("Lỗi kết nối máy chủ.");
+        } finally {
+            setLoading(false);
+        }
     };
-    const handleResetPassword = async () => {
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        if (!otp || !newPassword) return setMessage("Vui lòng nhập đầy đủ thông tin.");
         setLoading(true);
-        const res = await fetch(`${API_URL}/api/auth/verify-and-reset`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, otp, newPassword })
-        });
-        const data = await res.json();
-        setLoading(false);
-        if (data.success) {
-            alert("Đổi mật khẩu thành công!");
-            onClose();
-        } else {
-            alert(data.message);
+        try {
+            const res = await fetch(`${API_URL}/api/auth/verify-and-reset`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, otp, newPassword })
+            });
+            const data = await res.json();
+            setLoading(false);
+            if (data.success) {
+                alert("Đổi mật khẩu thành công!");
+                onClose();
+            } else {
+                alert(data.message);
+                setMessage(data.message || "OTP sai hoặc đã hết hạn.");
+            }
+        } catch {
+            setMessage("Lỗi hệ thống.");
+        } finally {
+            setLoading(false);
         }
     };
     return (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-6">
-            <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm shadow-2xl animate-in zoom-in-95">
-                <h2 className="text-xl font-black mb-6">Khôi phục mật khẩu</h2>
+            <div className="bg-white p-8 rounded-[2rem] w-full max-w-sm shadow-2xl">
+                <h2 className="text-xl font-black mb-1">Khôi phục mật khẩu</h2>
+                <p className="text-sm text-slate-500 mb-6 font-medium">
+                    {step === 1 ? "Bước 1: Xác thực Email" : "Bước 2: Nhập OTP & Mật khẩu mới"}
+                </p>
 
-                {step === 1 ? (
-                    <div className="space-y-4">
-                        <input type="email" placeholder="Nhập email đăng ký" className="w-full p-4 border rounded-2xl font-bold" onChange={(e) => setEmail(e.target.value)} />
-                        <button onClick={handleSendOtp} disabled={loading} className="w-full py-3 bg-teal-500 hover:bg-teal-600 text-white rounded-2xl font-bold">
-                            {loading ? "Đang gửi..." : "Gửi mã OTP"}
-                        </button>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        <input placeholder="Nhập OTP" className="w-full p-4 border rounded-2xl font-bold" onChange={e => setOtp(e.target.value)} />
-                        <input type="password" placeholder="Mật khẩu mới" className="w-full p-4 border rounded-2xl font-bold" onChange={e => setNewPassword(e.target.value)} />
-                        <button onClick={handleResetPassword} disabled={loading} className="w-full py-3 bg-teal-500 text-white rounded-2xl font-bold">
-                            {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
-                        </button>
+                {message && (
+                    <div className={`mb-4 p-3 rounded-xl text-xs font-bold ${step === 1 ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>
+                        {message}
                     </div>
                 )}
-                <button onClick={onClose} className="mt-4 text-xs font-bold text-slate-400 w-full hover:text-slate-600">Đóng</button>
+
+                {step === 1 ? (
+                    <form onSubmit={handleSendOtp} className="space-y-4">
+                        <input
+                            type="email"
+                            placeholder="Nhập email của bạn"
+                            className="w-full p-4 border rounded-2xl font-bold"
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <button type="submit" disabled={loading} className="w-full py-3 bg-teal-500 text-white rounded-2xl font-bold hover:bg-teal-600">
+                            {loading ? "Đang gửi..." : "Gửi mã OTP"}
+                        </button>
+                    </form>
+                ) : (
+                    <form onSubmit={handleResetPassword} className="space-y-4">
+                        <input
+                            placeholder="Nhập mã OTP"
+                            className="w-full p-4 border rounded-2xl font-bold"
+                            onChange={e => setOtp(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Mật khẩu mới"
+                            className="w-full p-4 border rounded-2xl font-bold"
+                            onChange={e => setNewPassword(e.target.value)}
+                            required
+                        />
+                        <button type="submit" disabled={loading} className="w-full py-3 bg-teal-600 text-white rounded-2xl font-bold hover:bg-teal-700">
+                            {loading ? "Đang xử lý..." : "Xác nhận đổi mật khẩu"}
+                        </button>
+                    </form>
+                )}
+
+                <button onClick={onClose} className="mt-4 text-xs font-bold text-slate-400 w-full hover:text-slate-600">
+                    Đóng
+                </button>
             </div>
         </div>
     );
