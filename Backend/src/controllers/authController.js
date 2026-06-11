@@ -9,7 +9,6 @@ apiInstance.setApiKey(
     brevo.TransactionalEmailsApiApiKeys.apiKey,
     process.env.BREVO_API_KEY
 );
-console.log("Brevo structure:", Object.keys(brevo));
 const login = async (req, res) => {
     const { username, password } = req.body;
 
