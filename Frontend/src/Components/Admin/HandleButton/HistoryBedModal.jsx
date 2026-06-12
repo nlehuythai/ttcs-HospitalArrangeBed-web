@@ -6,16 +6,16 @@ const HistoryBedModal = ({ isOpen, onClose, bed }) => {
     const [historyData, setHistoryData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const formatTime = (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleString('vi-VN', {
-            hour: '2-digit',
-            minute: '2-digit',
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
+    const formatDate = (isoString) => {
+        if (!isoString) return "";
+        const datePart = isoString.split('T')[0]; // "2026-06-12"
+        const timePart = isoString.split('T')[1].substring(0, 5); // "16:15"
+
+        const [year, month, day] = datePart.split('-');
+
+        return `${timePart} - ${day}/${month}/${year}`;
     };
+
     const fetchHistory = async () => {
         setIsLoading(true);
         try {
@@ -78,7 +78,7 @@ const HistoryBedModal = ({ isOpen, onClose, bed }) => {
 
                                     <div className="space-y-1">
                                         <p className="text-[11px] font-bold text-slate-400">
-                                            {formatTime(item.thoi_gian)}
+                                            {formatDate(item.thoi_gian)}
                                         </p>
                                         <p className="text-sm font-black text-slate-700">
                                             {item.trang_thai_cu} → {item.trang_thai_moi}

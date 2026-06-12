@@ -207,9 +207,10 @@ const addBed = async (req, res) => {
 const getReportBed = async (req, res) => {
     try {
         const query = `
-                SELECT tb.id, tb.giuong_id, tb.noi_dung, tb.thoi_gian_gui, g.ma_giuong 
+                SELECT tb.id, tb.giuong_id, tb.noi_dung, tb.thoi_gian_gui, g.ma_giuong ,u.fullname as y_ta
                 FROM thong_bao_giuong tb
                 JOIN giuong g ON tb.giuong_id = g.id
+                JOIN users u on u.id=tb.y_ta_id
                 WHERE tb.trang_thai_duyet = 'Chờ duyệt'
                 ORDER BY tb.thoi_gian_gui DESC
             `;
