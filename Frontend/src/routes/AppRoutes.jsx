@@ -17,6 +17,7 @@ import AdminBedMap from "../Components/Admin/AdminBedMap";
 import UserSettings from "../pages/shared/UserSettings";
 import OrderEntry from "../Components/Doctor/OrderEntry";
 import PresenceHandler from "../pages/Login/PresenceHandler";
+import AdminTaskBoard from "../Components/Admin/AdminTaskBoard";
 const AppRoutes = () => {
     return (
         <BrowserRouter>
@@ -68,6 +69,7 @@ const AppRoutes = () => {
                         <Route index element={<Reports />} />
                         <Route path="/admin/reports/AdminBedMap" element={<AdminBedMap />} />
                     </Route>
+                    <Route path="task-board" element={<AdminTaskBoard />} />
                     <Route path="settings" element={<UserSettings />} />
                 </Route>
                 <Route path="*" element={<Navigate to="/login" replace />} />

@@ -254,7 +254,7 @@ const orderChangeStatusBed = async (req, res) => {
     const y_ta_id = req.user.id;
     try {
         await pool.query(
-            'INSERT INTO thong_bao_giuong (giuong_id, y_ta_id, noi_dung) VALUES (?, ?, ?)',
+            'INSERT INTO thong_bao_giuong (giuong_id, y_ta_id, noi_dung) VALUES ($1, $2, $3)',
             [bed_id, y_ta_id, message]
         );
         res.status(200).json({ message: "Đã gửi đề xuất thành công" });

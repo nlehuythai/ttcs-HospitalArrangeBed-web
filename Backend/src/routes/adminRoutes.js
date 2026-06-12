@@ -9,4 +9,5 @@ router.get('/bed-history/:id', adminController.getBedHistory);
 router.get('/totalbeds', adminController.getTotalBeds);
 router.patch('/delete-bed/:id', verifyToken, adminController.deleteBed);
 router.post('/add-bed', adminController.addBed);
+router.get('/bed-reports', verifyToken, adminController.getReportBed)
 module.exports = router;

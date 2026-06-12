@@ -204,7 +204,21 @@ const addBed = async (req, res) => {
         client.release();
     }
 };
+const getReportBed = async (req, res) => {
+    try {
+        const query = `
+                SELECT tb.id, tb.giuong_id, tb.noi_dung, tb.thoi_gian_gui, g.ma_giuong 
+                FROM thong_bao_giuong tb
+                JOIN giuong g ON tb.giuong_id = g.id
+                WHERE tb.trang_thai_duyet = 'Chờ duyệt'
+                ORDER BY tb.thoi_gian_gui DESC
+            `;
+        const { rows } = await pool.query(query);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: "Lỗi lấy dữ liệu: " + err.message });
+    }
+};
 
 
-
-module.exports = { getReports, updateStatusBed, getBedHistory, getTotalBeds, deleteBed, addBed };  
+module.exports = { getReports, updateStatusBed, getBedHistory, getTotalBeds, deleteBed, addBed, getReportBed };  

@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { MdDashboard, MdManageAccounts, MdBarChart, MdLogout, MdHealthAndSafety } from "react-icons/md";
+import { MdDashboard, MdManageAccounts, MdBarChart, MdLogout, MdHealthAndSafety, MdPeople } from "react-icons/md";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useState } from "react";
 const Navigation = () => {
@@ -7,6 +7,7 @@ const Navigation = () => {
     const tabs = [
         { id: "accounts", label: "Quản lý Tài khoản", icon: <MdManageAccounts size={20} /> },
         { id: "reports", label: "Báo cáo Hệ thống", icon: <MdBarChart size={20} /> },
+        { id: "task-board", label: "Nhiệm vụ", icon: <MdPeople size={20} /> }
 
     ];
     const userData = sessionStorage.getItem('user');
