@@ -220,6 +220,26 @@ const getReportBed = async (req, res) => {
         res.status(500).json({ error: "Lỗi lấy dữ liệu: " + err.message });
     }
 };
+const updateStatusReport = async (req, res) => {
+    const { reportId } = req.params;
 
+    try {
+        const query = `
+            UPDATE thong_bao_giuong 
+            SET trang_thai_duyet = 'Đã duyệt' 
+            WHERE id = $1
+        `;
+        const result = await pool.query(query, [reportId]);
 
-module.exports = { getReports, updateStatusBed, getBedHistory, getTotalBeds, deleteBed, addBed, getReportBed };  
+        if (result.rowCount === 0) {
+            return res.status(404).json({ success: false, message: "Không tìm thấy yêu cầu" });
+        }
+
+        res.status(200).json({ success: true, message: "Đã xác nhận dọn dẹp thành công" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, message: "Lỗi server" });
+    }
+};
+
+module.exports = { getReports, updateStatusBed, getBedHistory, getTotalBeds, deleteBed, addBed, getReportBed, updateStatusReport };  

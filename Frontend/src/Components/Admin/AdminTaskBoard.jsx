@@ -20,7 +20,7 @@ const AdminTaskBoard = () => {
             setLoading(false);
         }
     };
-    const handleApprove = async (bedId) => {
+    const handleApprove = async (reportId, bedId) => {
         setLoading(true);
         try {
             const response = await fetch(`${API_URL}/api/admin/managebeds/${bedId}`, {
@@ -30,9 +30,17 @@ const AdminTaskBoard = () => {
                     trang_thai: 'Trống',
                 })
             });
+            const updateData = await response.json();
 
-            if (response.ok) {
-                alert("Cập nhật trạng thái giường thành công!");
+            if (updateData.success) {
+                await fetch(`${API_URL}/api/admin/approve-report/${reportId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${sessionStorage.getItem('token')}` }
+                });
+                alert("Duyệt hoàn tất!");
+                fetchTasks();
+            } else {
+                alert(updateData.message || "Không thể cập nhật giường!");
             }
         } catch (error) {
             console.error("Lỗi cập nhật:", error);
@@ -92,11 +100,8 @@ const AdminTaskBoard = () => {
                             </div>
 
                             <div className="flex gap-3">
-                                <button className="px-6 py-3 rounded-2xl font-bold text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors">
-                                    Từ chối
-                                </button>
-                                <button onClick={handleApprove(task.giuong_id)} className="px-6 py-3 bg-slate-900 text-white rounded-2xl font-black hover:bg-teal-500 transition-all shadow-lg shadow-teal-500/20">
-                                    Duyệt hoàn tất
+                                <button onClick={() => handleApprove(task.id, task.giuong_id)} disabled={loading} className="px-6 py-3 bg-slate-900 text-white rounded-2xl font-black hover:bg-teal-500 transition-all shadow-lg shadow-teal-500/20">
+                                    {loading ? 'Đang xử lý...' : 'Duyệt hoàn tất'}
                                 </button>
                             </div>
                         </div>
