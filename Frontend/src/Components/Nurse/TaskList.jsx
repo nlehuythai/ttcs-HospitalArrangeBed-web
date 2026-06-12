@@ -11,6 +11,10 @@ const TaskList = () => {
     const [orders, setOrders] = useState([]);
     const getAuthHeaders = () => {
         const token = sessionStorage.getItem("token");
+        if (!token) {
+            console.error("Token không tồn tại trong sessionStorage!");
+            return { 'Content-Type': 'application/json' };
+        }
         return {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
@@ -85,48 +89,77 @@ const TaskList = () => {
     const [filterStatus, setFilterStatus] = useState("pending");
     const [isUrgentOnly, setIsUrgentOnly] = useState(false);
     const filteredTasks = tasks.filter(task => {
-        if (isUrgentOnly) {
 
-            if (task.muc_do_uu_tien !== "Khẩn cấp" && task.type !== 'assign_bed' && task.type !== 'discharge') {
+        // Filter khẩn cấp
+        if (isUrgentOnly) {
+            const isUrgentTask =
+                task.type === "assign_bed" ||
+                task.type === "discharge" ||
+                task.muc_do_uu_tien === "Khẩn cấp";
+
+            if (!isUrgentTask) {
                 return false;
             }
         }
 
-
-        const todayStr = new Date().toDateString();
-
+        // Pending
         if (filterStatus === "pending") {
-            if (task.type === 'assign_bed' || task.type === 'discharge') {
+
+            // Nhiệm vụ giường và xuất viện luôn hiện ở Pending
+            if (task.type === "assign_bed" || task.type === "discharge") {
                 return true;
             }
-            if (task.type === 'order') {
-                const isToday = new Date(task.thoi_gian_chi_dinh).toDateString() === todayStr;
-                return (task.trang_thai !== 'Đã hoàn thành') && isToday;
+
+            if (task.type === "order") {
+                const taskDate = task.thoi_gian_chi_dinh
+                    ? new Date(task.thoi_gian_chi_dinh)
+                    : null;
+                taskDate.setHours(0, 0, 0, 0);
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+
+                if (!taskDate) return false;
+
+                taskDate.setHours(0, 0, 0, 0);
+
+                return (
+                    task.trang_thai !== "Đã hoàn thành" &&
+                    taskDate.getTime() === today.getTime()
+                );
             }
+
+            return false;
         }
 
+        // Overdue
         if (filterStatus === "overdue") {
-            if (task.type === 'assign_bed' || task.type === 'discharge') {
-                return false;
-            }
-            if (task.type === 'order') {
-                const isBeforeToday = new Date(task.thoi_gian_chi_dinh) < new Date(todayStr);
-                return (task.trang_thai !== 'Đã hoàn thành') && isBeforeToday;
-            }
+            const taskDate = task.thoi_gian_chi_dinh
+                ? new Date(task.thoi_gian_chi_dinh)
+                : null;
+            taskDate.setHours(0, 0, 0, 0);
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return task.type === 'order'
+                && task.trang_thai === 'Chờ thực hiện'
+                && taskDate.getTime() < today.getTime();
         }
 
+
+        // Completed
         if (filterStatus === "completed") {
-            if (task.type === 'assign_bed' || task.type === 'discharge') {
-                return false;
-            }
-            if (task.type === 'order') {
-                return task.trang_thai === 'Đã hoàn thành';
-            }
+
+            return (
+                task.type === "order" &&
+                task.trang_thai === "Đã hoàn thành"
+            );
         }
 
+        return false;
+    })
 
-        return true;
-    });
 
     return (
         <div className="w-full flex flex-col">
@@ -143,7 +176,7 @@ const TaskList = () => {
                         {
                             tasks.filter(t => {
                                 if (t.type === 'order') {
-                                    return t.trang_thai !== 'Đã hoàn thành' && t.trang_thai !== 'Hoàn thành';
+                                    return t.trang_thai !== 'Đã hoàn thành';
                                 }
                                 return true;
                             }).length

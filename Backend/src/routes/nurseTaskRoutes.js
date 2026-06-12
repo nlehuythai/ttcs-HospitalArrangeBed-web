@@ -13,4 +13,5 @@ router.get('/rooms', bedsController.getAllRooms);
 router.get('/nurse-task', verifyToken, nurseController.getNurseTasks);
 router.patch('/orders/:orderId/complete', nurseController.completeOrder)
 router.get('/beds/:id/patient', bedsController.getCurrentInpatientsOnBed);
+router.post('/report-bed', verifyToken, nurseController.orderChangeStatusBed);
 module.exports = router;

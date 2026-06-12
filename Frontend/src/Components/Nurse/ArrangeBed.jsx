@@ -3,12 +3,14 @@ import BedAssignmentModal from "./BedAssignmentModal";
 import { data } from "react-router-dom";
 import { API_URL } from "../../api";
 import PatientInfoModal from "./handleButton/PatientInfoModal";
+import ReportBedModal from "./handleButton/ReportBedModal";
 const ArrangeBed = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [targetBed, setTargetBed] = useState(null);
     const [waitingPatients, setWaitingPatients] = useState([]);
     const [beds, setBeds] = useState([]);
     const [isPatientModalOpen, setIsPatientModalOpen] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
     const [currentPatient, setCurrentPatient] = useState(null);
     const token = sessionStorage.getItem('token');
     const loadWaitingList = async () => {
@@ -199,10 +201,16 @@ const ArrangeBed = () => {
                             </div>
 
                             <button
-                                onClick={() => handleBedClick(bed)}
-                                disabled={isMaintenance}
+                                onClick={() => {
+                                    if (isMaintenance) {
+                                        setIsReportModalOpen(true);
+                                        setTargetBed(bed);
+                                    } else {
+                                        handleBedClick(bed);
+                                    }
+                                }}
                                 className={`relative z-10 w-full py-4 rounded-2xl font-black text-xs uppercase tracking-[0.1em] transition-all duration-300 active:scale-95 shadow-lg
-                                    ${theme.btn} ${isMaintenance ? 'cursor-not-allowed opacity-80 shadow-none' : ''}`}
+                                    ${theme.btn} ${isMaintenance ? ' opacity-80 shadow-none' : ''}`}
                             >
                                 {isAvailable ? (
                                     <span className="flex items-center justify-center gap-2">
@@ -231,6 +239,12 @@ const ArrangeBed = () => {
                 onClose={() => setIsPatientModalOpen(false)}
                 bed={targetBed}
                 patient={currentPatient}
+            />
+            <ReportBedModal
+                isOpen={isReportModalOpen}
+                onClose={() => setIsReportModalOpen(false)}
+                bed={targetBed}
+                token={token}
             />
         </div>
     );

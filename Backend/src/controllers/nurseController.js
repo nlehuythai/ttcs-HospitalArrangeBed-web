@@ -249,4 +249,17 @@ const completeOrder = async (req, res) => {
         });
     }
 };
-module.exports = { waitingList, assignBed, getnurseInfo, getOverviewStats, getPendingActions, getNurseTasks, completeOrder };
+const orderChangeStatusBed = async (req, res) => {
+    const { bed_id, message } = req.body;
+    const y_ta_id = req.user.id;
+    try {
+        await db.query(
+            'INSERT INTO thong_bao_giuong (giuong_id, y_ta_id, noi_dung) VALUES (?, ?, ?)',
+            [bed_id, y_ta_id, message]
+        );
+        res.status(200).json({ message: "Đã gửi đề xuất thành công" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+module.exports = { waitingList, assignBed, getnurseInfo, getOverviewStats, getPendingActions, getNurseTasks, completeOrder, orderChangeStatusBed };
