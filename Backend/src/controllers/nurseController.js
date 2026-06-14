@@ -198,9 +198,9 @@ const getNurseTasks = async (req, res) => {
              FROM ylenh yl
              JOIN hosonhapvien nv ON yl.ho_so_id = nv.id
              JOIN benhnhan bn on bn.id=nv.benh_nhan_id
-             JOIN giuong g on nv.giuong_id=g.id
-             JOIN phong p on g.phong_id=p.id
-             JOIN users u on u.id=yl.bac_si_id 
+             LEFT JOIN giuong g on nv.giuong_id=g.id
+             LEFT JOIN phong p on g.phong_id=p.id
+             LEFT JOIN users u on u.id=yl.bac_si_id 
              WHERE nv.y_ta_id = $1
              ORDER BY yl.thoi_gian_chi_dinh DESC;`,
             [y_ta_id]);
