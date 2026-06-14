@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MdLogin, MdMedicalServices, MdShield, MdPersonOutline, MdLockOutline, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { API_URL } from '../../api';
 import ForgotPasswordModal from '../../Components/Auth/ForgotPasswordModal';
+import logo from '../../../public/logo.svg'
 const LoginLayout = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -59,8 +60,12 @@ const LoginLayout = () => {
 
                 <div className="flex flex-col items-center mb-10">
                     <div className="relative">
-                        <div className="p-5 bg-teal-600 rounded-[2rem] shadow-xl shadow-teal-100 text-white animate-bounce-slow">
-                            <MdMedicalServices size={40} />
+                        <div className="w-30 h-30 p-5 bg-teal-600 rounded-[2rem] shadow-xl shadow-teal-100 text-white animate-bounce-slow">
+                            <img
+                                src={logo}
+                                alt="Mô tả ảnh"
+                                className="w-full h-full object-cover rounded-[1rem]"
+                            />
                         </div>
                         <div className="absolute -bottom-2 -right-2 bg-white p-1.5 rounded-full shadow-md text-emerald-500">
                             <MdShield size={20} />

@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useState } from "react";
 import { MdDashboard, MdPeople, MdHotel, MdDescription, MdSend, MdHealthAndSafety, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { useNavigate, useLocation } from "react-router-dom";
+import logo from "/logo.svg"
 const Navigation = () => {
     const navigate = useNavigate();
     const tabs = [
@@ -32,11 +33,15 @@ const Navigation = () => {
 
                         <div className="p-6 border-b border-slate-800">
                             <div onClick={() => navigate('/doctor')} className="cursor-pointer flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gradient-to-br from-teal-600 to-cyan-500 rounded-xl flex items-center justify-center text-white">
-                                    <MdHealthAndSafety size={28} />
+                                <div className="w-15 h-15  rounded-xl flex items-center justify-center text-white">
+                                    <img
+                                        src={logo}
+                                        alt="Mô tả ảnh"
+                                        className="w-full h-full object-cover rounded-[1rem]"
+                                    />
                                 </div>
                                 <div>
-                                    <h1 className="text-lg font-black text-white leading-tight">Hospital T&N</h1>
+                                    <h1 className="text-lg font-black text-white leading-tight">T&N Hospital</h1>
                                     <div className="mt-1 flex items-center gap-1.5 px-2 py-0.5 bg-teal-900/50 rounded-full border border-blue-800/50 w-fit">
                                         <span className="relative flex h-1.5 w-1.5">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
