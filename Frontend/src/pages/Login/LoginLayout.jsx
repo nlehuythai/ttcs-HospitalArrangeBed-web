@@ -4,6 +4,7 @@ import { MdLogin, MdMedicalServices, MdShield, MdPersonOutline, MdLockOutline, M
 import { API_URL } from '../../api';
 import ForgotPasswordModal from '../../Components/Auth/ForgotPasswordModal';
 import logo from '../../../public/logo.svg'
+import imgLayout from "/image.png"
 const LoginLayout = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -52,7 +53,15 @@ const LoginLayout = () => {
         }
     }
     return (
-        <div className="min-h-screen bg-[#f1f5f9] flex items-center justify-center p-6 relative overflow-hidden">
+        <div
+            className="min-h-screen w-full flex items-center justify-center font-sans relative bg-slate-50 overflow-hidden"
+            style={{
+                backgroundImage: `url(${imgLayout})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed"
+            }}
+        >
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-200/40 rounded-full blur-[120px]" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-emerald-100/40 rounded-full blur-[120px]" />
 

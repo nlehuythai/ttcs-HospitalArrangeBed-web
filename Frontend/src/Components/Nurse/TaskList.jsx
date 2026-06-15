@@ -102,6 +102,8 @@ const TaskList = () => {
             }
         }
 
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
         // Pending
         if (filterStatus === "pending") {
 
@@ -111,18 +113,14 @@ const TaskList = () => {
             }
 
             if (task.type === "order") {
-                const taskDate = task.thoi_gian_chi_dinh
-                    ? new Date(task.thoi_gian_chi_dinh)
-                    : null;
-                taskDate.setHours(0, 0, 0, 0);
+                if (!task.thoi_gian_chi_dinh) return false;
 
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-
-
-                if (!taskDate) return false;
+                const taskDate = new Date(task.thoi_gian_chi_dinh);
+                if (isNaN(taskDate.getTime())) return false;
 
                 taskDate.setHours(0, 0, 0, 0);
+
+
 
                 return (
                     task.trang_thai !== "Đã hoàn thành" &&
@@ -135,13 +133,11 @@ const TaskList = () => {
 
         // Overdue
         if (filterStatus === "overdue") {
-            const taskDate = task.thoi_gian_chi_dinh
-                ? new Date(task.thoi_gian_chi_dinh)
-                : null;
+            if (task.type !== 'order' || !task.thoi_gian_chi_dinh) return false;
+            const taskDate = new Date(task.thoi_gian_chi_dinh);
+            if (isNaN(taskDate.getTime())) return false;
             taskDate.setHours(0, 0, 0, 0);
 
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
             return task.type === 'order'
                 && task.trang_thai === 'Chờ thực hiện'
                 && taskDate.getTime() < today.getTime();

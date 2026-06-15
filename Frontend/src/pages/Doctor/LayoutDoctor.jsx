@@ -7,6 +7,7 @@ import { CiCirclePlus } from "react-icons/ci";
 import useLogout from '../../hooks/useLogout';
 import UserSettings from '../shared/UserSettings';
 import { useNavigate } from 'react-router-dom';
+import imgLayout from "/image.png"
 const LayoutDoctor = () => {
     const [isOpenAdmission, setIsOpenAdmission] = useState(false);
     const [doctorName, setDoctorName] = useState('Bác sĩ');
@@ -23,8 +24,15 @@ const LayoutDoctor = () => {
     }, [userObj]);
 
     return (
-        <div className="min-h-screen bg-slate-150 flex flex-row font-sans">
-
+        <div
+            className="min-h-screen w-full flex flex-row font-sans relative bg-slate-50"
+            style={{
+                backgroundImage: `url(${imgLayout})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed"
+            }}
+        >
             {/* 1. SIDEBAR (Nằm cố định bên trái) */}
             <Navigation />
 
@@ -57,7 +65,7 @@ const LayoutDoctor = () => {
                     <div className="flex items-center gap-6">
 
 
-                        <div className="flex items-center gap-6 bg-slate-50/50 p-2 pr-4 rounded-3xl border border-slate-100">
+                        <div className="flex items-center gap-6 bg-slate-50 p-2 pr-4 rounded-3xl border border-slate-100">
 
                             <div className="flex items-center gap-3">
                                 <div className="relative">

@@ -132,7 +132,7 @@ const ArrangeBed = () => {
                 </div>
 
                 {/* Legend với hiệu ứng đếm số */}
-                <div className="flex items-center gap-6 bg-slate-50/50 p-2 rounded-3xl px-6 border border-slate-100">
+                <div className="flex items-center gap-6 bg-slate-50 p-2 rounded-3xl px-6 border border-slate-100">
                     {statuses.map((status) => (
                         <div key={status.label} className="flex items-center gap-3 group">
                             <div className={`relative flex h-3 w-3`}>
@@ -157,10 +157,10 @@ const ArrangeBed = () => {
 
                     // Dynamic Colors
                     const theme = isMaintenance
-                        ? { bg: "bg-amber-50/50", border: "border-amber-100", text: "text-amber-700", accent: "bg-amber-500", btn: "bg-amber-100 text-amber-700 hover:bg-amber-200", shadow: "hover:shadow-amber-200" }
+                        ? { bg: "bg-amber-50", border: "border-amber-100", text: "text-amber-700", accent: "bg-amber-500", btn: "bg-amber-100 text-amber-700 hover:bg-amber-200", shadow: "hover:shadow-amber-200" }
                         : isOccupied
-                            ? { bg: "bg-blue-50/50", border: "border-blue-100", text: "text-blue-700", accent: "bg-blue-500", btn: "bg-blue-600 text-white shadow-blue-200 hover:bg-blue-700", shadow: "hover:shadow-blue-200" }
-                            : { bg: "bg-emerald-50/50", border: "border-emerald-100", text: "text-emerald-700", accent: "bg-emerald-500", btn: "bg-slate-900 text-white shadow-slate-300", shadow: "hover:shadow-emerald-200" };
+                            ? { bg: "bg-blue-50", border: "border-blue-100", text: "text-blue-700", accent: "bg-blue-500", btn: "bg-blue-600 text-white shadow-blue-200 hover:bg-blue-700", shadow: "hover:shadow-blue-200" }
+                            : { bg: "bg-emerald-50", border: "border-emerald-100", text: "text-emerald-700", accent: "bg-emerald-500", btn: "bg-emerald-400 text-white shadow-slate-300", shadow: "hover:shadow-emerald-200" };
 
                     return (
                         <div

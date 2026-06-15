@@ -45,7 +45,7 @@ const ManagePatient = () => {
     return (
         <div className="flex gap-8 h-[calc(100vh-180px)] animate-in fade-in duration-700 p-1">
             <div className="w-1/3 max-w-[350px] flex flex-col">
-                <div className="flex items-center justify-between mb-6 px-1">
+                <div className="flex items-center justify-between mb-6 p-4 bg-white/70 rounded-3xl border border-white/50 shadow-sm">
                     <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">
                         Bệnh nhân nội trú
                     </h3>

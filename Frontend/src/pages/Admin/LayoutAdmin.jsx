@@ -4,6 +4,7 @@ import { MdLogout, MdHealthAndSafety, MdSettings } from "react-icons/md";
 import { useState, useEffect } from 'react';
 import useLogout from "../../hooks/useLogout";
 import { useNavigate } from "react-router-dom";
+import imgLayout from "/image.png"
 const LayoutAdmin = () => {
     const [adminName, setAdminName] = useState('Admin');
     const logout = useLogout();
@@ -17,10 +18,18 @@ const LayoutAdmin = () => {
     }, [userObj]);
     const navigate = useNavigate();
     return (
-        <div className="min-h-screen bg-slate-150 flex flex-row font-sans">
+        <div
+            className="min-h-screen w-full flex flex-row font-sans relative bg-slate-50"
+            style={{
+                backgroundImage: `url(${imgLayout})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundAttachment: "fixed"
+            }}
+        >
             <Navigation />
             <main className="flex-1 flex flex-col min-w-0 overflow-y-auto h-screen p-4 md:p-8">
-                <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6 transition-all duration-300 mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/30 gap-6 transition-all duration-300 mb-8">
                     <div onClick={() => navigate('/admin')} className="cursor-pointer flex items-center gap-6">
                         <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                             <MdHealthAndSafety size={32} />
@@ -47,7 +56,7 @@ const LayoutAdmin = () => {
                     <div className="flex items-center gap-6">
 
 
-                        <div className="flex items-center gap-6 bg-slate-50/50 p-2 pr-4 rounded-3xl border border-slate-100">
+                        <div className="flex items-center gap-6 bg-slate-50 p-2 pr-4 rounded-3xl border border-slate-100">
 
                             <div className="flex items-center gap-3">
                                 <div className="relative">

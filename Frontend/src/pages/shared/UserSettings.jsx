@@ -103,9 +103,7 @@ const UserProfileSettings = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-6 animate-in fade-in duration-500">
-            <h2 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-2">
-                <MdOutlineBadge className="text-teal-500" /> Cài đặt tài khoản
-            </h2>
+
 
             <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden flex flex-col md:flex-row min-h-[500px]">
                 {/* Sidebar Menu */}

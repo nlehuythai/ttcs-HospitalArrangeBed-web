@@ -114,17 +114,17 @@ const DischargeProcess = () => {
         }
     };
     return (
-        <div className="h-screen flex flex-col overflow-hidden">
+        <div className="h-full flex flex-col overflow-hidden">
 
 
             <div className="flex flex-1 overflow-hidden p-6 gap-6">
 
                 <aside className="w-1/3 max-w-[400px] flex flex-col">
-                    <div className="flex items-center justify-between mb-4 px-1">
+                    <div className="flex items-center justify-between mb-6 p-4 bg-white/70 rounded-3xl border border-white/50 shadow-sm">
                         <h3 className="font-extrabold text-slate-900 text-lg tracking-tight">
                             Bệnh nhân chờ xuất viện
                         </h3>
-                        <span className="bg-teal-500 text-white text-xs font-black px-2.5 py-1 rounded-full">
+                        <span className="bg-teal-500 text-white text-xs font-black px-2.5 py-1 rounded-full shadow-teal-500/40">
                             {patients.length}
                         </span>
                     </div>
@@ -170,7 +170,7 @@ const DischargeProcess = () => {
 
                 {/* RIGHT COLUMN: Chi tiết kiểm tra (Detail) */}
                 <main className="flex-1 flex flex-col min-w-0">
-                    <div className="mb-4 flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-6 p-4 bg-white/70 rounded-3xl border border-white/70 shadow-sm">
                         <h2 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
                             <span className="w-2 h-8 bg-teal-500 rounded-full"></span>
                             Chi tiết hồ sơ

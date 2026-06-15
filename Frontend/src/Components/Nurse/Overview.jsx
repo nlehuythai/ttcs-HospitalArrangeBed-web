@@ -39,7 +39,7 @@ const Overview = () => {
     return (
         <div className="flex flex-col gap-8 p-2">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row justify-between items-center bg-white/80 backdrop-blur-md sticky top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6">
+            <div className="flex flex-col md:flex-row justify-between items-center bg-white/70 backdrop-blur-xl sticky top-4 z-20 p-6 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 gap-6">
                 <div>
                     <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">Tổng quan hệ thống</h2>
                     <p className="text-slate-500 text-sm mt-1">Dữ liệu cập nhật thời gian thực từ {data.ten_khoa}</p>
@@ -55,7 +55,7 @@ const Overview = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {stats.map((item, index) => (
-                    <div key={index} className="group bg-white p-6 rounded-[2rem] border border-slate-100 flex justify-between items-start shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 cursor-default">
+                    <div key={index} className="group bg-white/70 backdrop-blur-md p-6 rounded-[2rem] border border-slate-100 flex justify-between items-start shadow-sm hover:shadow-md hover:border-blue-100 transition-all duration-300 cursor-default">
                         <div>
                             <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">{item.label}</p>
                             <h3 className="text-3xl font-black text-slate-900 group-hover:scale-105 transition-transform origin-left lowercase tabular-nums">

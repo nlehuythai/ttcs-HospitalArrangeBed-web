@@ -116,7 +116,7 @@ const SystemReport = () => {
             </div>
 
             {/* 1. TOP STATS CARDS - Phong cách High-End */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {summaryData.map((item, index) => (
                     <div key={index} className="group bg-white p-6 rounded-[2rem] border border-slate-100 shadow-xl shadow-slate-200/40 hover:shadow-2xl hover:shadow-blue-200/30 transition-all duration-300 relative overflow-hidden">
                         <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full bg-gradient-to-br ${item.color} opacity-[0.03] group-hover:scale-150 transition-transform duration-700`}></div>

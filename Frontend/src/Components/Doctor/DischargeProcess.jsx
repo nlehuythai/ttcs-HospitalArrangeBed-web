@@ -75,7 +75,7 @@ const DoctorDischarge = () => {
             <div className="flex flex-1 overflow-hidden p-6 gap-6">
 
                 <div className="w-1/3 max-w-[350px] flex flex-col">
-                    <div className="flex items-center justify-between mb-6 px-1">
+                    <div className="flex items-center justify-between mb-6 p-4 bg-white/70 rounded-3xl border border-white/50 shadow-sm">
                         <h3 className="font-extrabold text-slate-900 text-xl tracking-tight">
                             Bệnh nhân đang điều trị
                         </h3>
