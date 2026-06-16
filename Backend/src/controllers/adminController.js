@@ -31,7 +31,7 @@ const getReports = async (req, res) => {
         const occupiedBeds = parseInt(data.occupied_beds) || 0;
         const total_patients_monthly = parseInt(data.total_patients_monthly) || 0;
         const total_beds_month = parseInt(data.total_beds_month) || 0;
-        const occupancyRateMonth = total_patients_monthly > 0 && total_beds_month > 0 ? ((total_patients_monthly / total_beds_month) * 100).toFixed(1) : 0;
+        const occupancyRateMonth = total_patients_monthly > 0 && total_beds_month > 0 ? ((total_patients_monthly / total_beds_month * 30) * 100).toFixed(1) : 0;
         const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) : 0;
         res.json({
             ...data,
