@@ -3,7 +3,10 @@ import { MdCheckCircle, MdInfoOutline, MdOutlineCheckBoxOutlineBlank, MdPrint, M
 import { format } from 'date-fns';
 import ExportDischargeDocx from "./handleButton/ExportDischargeDocx";
 import { API_URL } from "../../api";
+import { useSearchParams } from "react-router-dom";
 const DischargeProcess = () => {
+    const [searchParams] = useSearchParams();
+    const patientIdFromUrl = searchParams.get("patientId");
     const [selectedPatient, setSelectedPatient] = useState(null);
     const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -56,6 +59,14 @@ const DischargeProcess = () => {
         fetchPatients();
     }, []);
 
+    useEffect(() => {
+        if (patientIdFromUrl && patients.length > 0) {
+            const foundPatient = patients.find(p => p.id.toString() === patientIdFromUrl);
+            if (foundPatient) {
+                setSelectedPatient(foundPatient);
+            }
+        }
+    }, [patientIdFromUrl, patients]); // Chạy lại khi danh sách bệnh nhân hoặc ID trên URL thay đổi
     const toggleCheck = (key) => {
         setChecklist(prev => ({ ...prev, [key]: !prev[key] }));
     };

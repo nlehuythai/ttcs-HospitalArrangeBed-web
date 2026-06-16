@@ -126,6 +126,14 @@ const OrderEntry = () => {
         fecthNurse();
     }, []);
     const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 1000);
+
+        return () => clearTimeout(handler); // Cleanup nếu searchTerm thay đổi sớm hơn 1s
+    }, [searchTerm]);
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500 p-6">
 
@@ -148,7 +156,7 @@ const OrderEntry = () => {
 
                 <div className="flex-1 overflow-y-auto p-3 space-y-2">
                     {patients.filter((p) => {
-                        const search = searchTerm.toLowerCase();
+                        const search = debouncedSearchTerm.toLowerCase();
                         return (
                             p.ho_ten.toLowerCase().includes(search) ||
                             p.ma_giuong.toString().toLowerCase().includes(search)

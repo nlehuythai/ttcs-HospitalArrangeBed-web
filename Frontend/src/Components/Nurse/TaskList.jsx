@@ -54,8 +54,8 @@ const TaskList = () => {
         navigate(`/nurse/beds`);
     };
 
-    const handleConfirmDischarge = async (task) => {
-        navigate(`/nurse/DischargeProcessNurse`);
+    const handleConfirmDischarge = async (taskId) => {
+        navigate(`/nurse/DischargeProcessNurse?patientId=${taskId}`);
     }
 
 
@@ -293,7 +293,7 @@ const TaskList = () => {
                                 </div>
 
                                 <button
-                                    onClick={() => handleConfirmDischarge(task)}
+                                    onClick={() => handleConfirmDischarge(task.id)}
                                     className="w-full bg-rose-500 hover:bg-rose-600 text-white py-4 rounded-2xl font-bold text-sm transition-all shadow-lg shadow-rose-100"
                                 >
                                     Xác nhận đã rời viện

@@ -27,6 +27,24 @@ const ExportDischargeDocx = (patientInfo) => {
                 }
             },
             children: [
+
+                new Table({
+                    width: { size: 100, type: WidthType.PERCENTAGE },
+                    borders: { top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE }, left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE }, insideVertical: { style: BorderStyle.NONE } },
+                    rows: [
+                        new TableRow({
+                            children: [
+                                new TableCell({ width: { size: 30, type: WidthType.PERCENTAGE }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "CƠ QUAN CHỦ QUẢN", font: "Times New Roman", size: 22 })] }), new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "TÊN CƠ SỞ KCB", bold: true, font: "Times New Roman", size: 22 })] })] }),
+                                new TableCell({ width: { size: 40, type: WidthType.PERCENTAGE }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM", bold: true, font: "Times New Roman", size: 22 })] }), new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Độc lập - Tự do - Hạnh phúc", font: "Times New Roman", size: 22 })] }), new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "__________________________", font: "Times New Roman", size: 22 })] })] }),
+                                new TableCell({ width: { size: 30, type: WidthType.PERCENTAGE }, children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "MS:...", font: "Times New Roman", size: 22 })] }), new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Số hồ sơ/Số BA:....", bold: true, font: "Times New Roman", size: 22 })] })] })
+                            ]
+                        })
+                    ]
+                }),
+                new Paragraph({
+                    spacing: { after: 500 }
+                }),
+
                 // --- TIÊU ĐỀ TÊN BỆNH VIỆN ---
                 new Paragraph({
                     alignment: AlignmentType.CENTER,
@@ -46,50 +64,41 @@ const ExportDischargeDocx = (patientInfo) => {
                 }),
 
                 // --- BẢNG THÔNG TIN HÀNH CHÍNH (Kẻ ô chia khung) ---
-                new Table({
-                    width: { size: 100, type: WidthType.PERCENTAGE },
-                    rows: [
-                        // Hàng 1: Họ tên & Ngày sinh
-                        new TableRow({
-                            children: [
-                                new TableCell({
-                                    width: { size: 65, type: WidthType.PERCENTAGE },
-                                    borders: { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder },
-                                    children: [new Paragraph({ children: [new TextRun({ text: `Họ và tên bệnh nhân: ${patientInfo.ho_ten || ""}`, font: "Arial", size: 22 })] })],
-                                }),
-                                new TableCell({
-                                    width: { size: 35, type: WidthType.PERCENTAGE },
-                                    borders: { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder },
-                                    children: [new Paragraph({ children: [new TextRun({ text: `Ngày sinh: ${ngaySinhFormatted}`, font: "Arial", size: 22 })] })],
-                                }),
-                            ],
-                        }),
-                        // Hàng 2: Số hồ sơ & Khoa
-                        new TableRow({
-                            children: [
-                                new TableCell({
-                                    width: { size: 65, type: WidthType.PERCENTAGE },
-                                    borders: { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder },
-                                    children: [new Paragraph({ children: [new TextRun({ text: `Số hồ sơ: ${patientInfo.id || "---"}`, font: "Arial", size: 22 })] })],
-                                }),
-                                new TableCell({
-                                    width: { size: 35, type: WidthType.PERCENTAGE },
-                                    borders: { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder },
-                                    children: [new Paragraph({ children: [new TextRun({ text: `Khoa: ${patientInfo.ten_khoa || "Nội Trú"}`, font: "Arial", size: 22 })] })],
-                                }),
-                            ],
-                        }),
-                        // Hàng 3: Chẩn đoán khi xuất viện (Gộp 2 cột)
-                        new TableRow({
-                            children: [
-                                new TableCell({
-                                    columnSpan: 2,
-                                    borders: { top: thinBorder, bottom: thinBorder, left: thinBorder, right: thinBorder },
-                                    children: [new Paragraph({ children: [new TextRun({ text: "Chẩn đoán khi xuất viện: ...............  ", font: "Arial", size: 22 })] })],
-                                }),
-                            ],
-                        }),
+                // --- THÔNG TIN HÀNH CHÍNH (Thay vì dùng Table, dùng Paragraph) ---
+                new Paragraph({
+                    children: [
+                        new TextRun({ text: "Họ và tên bệnh nhân: ", font: "Arial", size: 22 }),
+                        new TextRun({ text: patientInfo.ho_ten || "...........................................................................................................", font: "Arial", size: 22 })
                     ],
+                    spacing: { after: 150 }
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({ text: "Ngày sinh: ", font: "Arial", size: 22 }),
+                        new TextRun({ text: ngaySinhFormatted || "...........................................................................................................", font: "Arial", size: 22 })
+                    ],
+                    spacing: { after: 150 }
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({ text: "Số hồ sơ: ", font: "Arial", size: 22 }),
+                        new TextRun({ text: patientInfo.id || "...........................................................................................................", font: "Arial", size: 22 })
+                    ],
+                    spacing: { after: 150 }
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({ text: "Khoa: ", font: "Arial", size: 22 }),
+                        new TextRun({ text: patientInfo.ten_khoa || "...........................................................................................................", font: "Arial", size: 22 })
+                    ],
+                    spacing: { after: 150 }
+                }),
+                new Paragraph({
+                    children: [
+                        new TextRun({ text: "Chẩn đoán khi xuất viện: ", font: "Arial", size: 22 }),
+                        new TextRun({ text: "...........................................................................................................", font: "Arial", size: 22 })
+                    ],
+                    spacing: { after: 400 } // Khoảng cách lớn hơn một chút trước khi sang phần QUÁ TRÌNH ĐIỀU TRỊ
                 }),
 
                 // Khoảng cách sau bảng hành chính

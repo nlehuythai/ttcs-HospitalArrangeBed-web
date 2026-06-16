@@ -10,9 +10,16 @@ const ManagePatient = () => {
     const [selectedId, setSelectedId] = useState(null);
     const activePatient = patients.find(p => p.id === selectedId);
     const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 1500);
 
+        return () => clearTimeout(handler);
+    }, [searchTerm]);
     const filteredPatients = patients.filter((p) => {
-        const search = searchTerm.toLowerCase().trim();
+        const search = debouncedSearch.toLowerCase().trim();
 
         const matchesName = p.ho_ten ? p.ho_ten.toLowerCase().includes(search) : false;
         const matchesBed = p.ma_giuong ? p.ma_giuong.toLowerCase().includes(search) : false;
