@@ -20,8 +20,14 @@ const getReports = async (req, res) => {
                 (SELECT COUNT(*) FROM giuong WHERE giuong.is_deleted=false) as total_beds,
                 (SELECT COUNT(*) FROM giuong WHERE giuong.is_deleted=false AND created_at<$1 AND (deleted_at>$1 or deleted_at IS NULL) )as total_beds_month,
                 (SELECT COUNT(*) FROM giuong WHERE trang_thai = 'Đang sử dụng') as occupied_beds,
-                (SELECT COUNT(*) FROM users Where status='Hoạt động' ) as active_account
-            FROM (SELECT 1) AS dummy;
+                (SELECT COUNT(*) FROM users Where status='Hoạt động' ) as active_account,
+                (SELECT 
+                COALESCE(SUM(
+                    EXTRACT(DAY FROM (
+                        LEAST(COALESCE(ngay_xuat_vien, CURRENT_DATE), $1::date) - 
+                        GREATEST(thoi_gian_nhap_vien, $2::date)
+                    )) + 1
+                ), 0) as total_patient_days),
         `, [endDate, startDate]);
 
         const data = stats.rows[0];
@@ -29,7 +35,7 @@ const getReports = async (req, res) => {
         // Tính toán tỷ lệ lấp đầy
         const totalBeds = parseInt(data.total_beds) || 0;
         const occupiedBeds = parseInt(data.occupied_beds) || 0;
-        const total_patients_monthly = parseInt(data.total_patients_monthly) || 0;
+        const total_patients_monthly = parseInt(data.total_patient_days) || 0;
         const total_beds_month = parseInt(data.total_beds_month) || 0;
         const occupancyRateMonth = total_patients_monthly > 0 && total_beds_month > 0 ? ((total_patients_monthly / (total_beds_month * 30)) * 100).toFixed(1) : 0;
         const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) : 0;
