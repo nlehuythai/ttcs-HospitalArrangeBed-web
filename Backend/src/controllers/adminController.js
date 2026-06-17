@@ -7,6 +7,7 @@ const getReports = async (req, res) => {
     const endDate = month === 12
         ? `${year + 1}-01-01`
         : `${year}-${month + 1}-01`;
+    const daysInMonth = new Date(year, month, 0).getDate();
     try {
         const stats = await pool.query(`
              SELECT 
@@ -21,13 +22,15 @@ const getReports = async (req, res) => {
                 (SELECT COUNT(*) FROM giuong WHERE giuong.is_deleted=false AND created_at<$1 AND (deleted_at>$1 or deleted_at IS NULL) )as total_beds_month,
                 (SELECT COUNT(*) FROM giuong WHERE trang_thai = 'Đang sử dụng') as occupied_beds,
                 (SELECT COUNT(*) FROM users Where status='Hoạt động' ) as active_account,
-                (SELECT 
-                COALESCE(SUM(
+                (SELECT COALESCE(SUM(
                     EXTRACT(DAY FROM (
-                        LEAST(COALESCE(ngay_xuat_vien, CURRENT_DATE), $1::date) - 
+                        LEAST(COALESCE(ngay_xuat_vien, CURRENT_DATE), $1::date - INTERVAL '1 day') - 
                         GREATEST(thoi_gian_nhap_vien, $2::date)
                     )) + 1
-                ), 0) as total_patient_days),
+                ), 0) FROM hosonhapvien 
+                 WHERE thoi_gian_nhap_vien < $1 
+                 AND (ngay_xuat_vien >= $2 OR ngay_xuat_vien IS NULL)) as total_patient_days
+            FROM (SELECT 1) AS dummy;
         `, [endDate, startDate]);
 
         const data = stats.rows[0];
@@ -37,7 +40,7 @@ const getReports = async (req, res) => {
         const occupiedBeds = parseInt(data.occupied_beds) || 0;
         const total_patients_monthly = parseInt(data.total_patient_days) || 0;
         const total_beds_month = parseInt(data.total_beds_month) || 0;
-        const occupancyRateMonth = total_patients_monthly > 0 && total_beds_month > 0 ? ((total_patients_monthly / (total_beds_month * 30)) * 100).toFixed(1) : 0;
+        const occupancyRateMonth = total_patients_monthly > 0 && total_beds_month > 0 ? ((total_patients_monthly / (total_beds_month * daysInMonth)) * 100).toFixed(1) : 0;
         const occupancyRate = totalBeds > 0 ? ((occupiedBeds / totalBeds) * 100).toFixed(1) : 0;
         res.json({
             ...data,
