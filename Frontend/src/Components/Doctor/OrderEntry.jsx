@@ -317,12 +317,23 @@ const OrderEntry = () => {
                                             <tr key={order.id} className="group hover:translate-x-1 transition-all duration-200">
                                                 {/* Cột Thời Gian */}
                                                 <td className="bg-slate-50/50 group-hover:bg-white group-hover:shadow-sm rounded-l-2xl px-4 py-4">
-                                                    <div className="text-sm font-bold text-slate-700">
-                                                        {new Date(order.thoi_gian_chi_dinh).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}
-                                                    </div>
-                                                    <div className="text-[10px] text-slate-400 font-medium">
-                                                        {new Date(order.thoi_gian_chi_dinh).toLocaleDateString('vi-VN')}
-                                                    </div>
+                                                    {(() => {
+                                                        const raw = order.thoi_gian_chi_dinh;
+                                                        const datePart = raw.split('T')[0];
+                                                        const timePart = raw.split('T')[1].substring(0, 8);
+                                                        const [y, m, d] = datePart.split('-');
+
+                                                        return (
+                                                            <>
+                                                                <div className="text-sm font-bold text-slate-700">
+                                                                    {timePart}
+                                                                </div>
+                                                                <div className="text-[10px] text-slate-400 font-medium">
+                                                                    {d}/{m}/{y}
+                                                                </div>
+                                                            </>
+                                                        );
+                                                    })()}
                                                 </td>
 
                                                 {/* Cột Loại */}
