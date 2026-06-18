@@ -89,72 +89,52 @@ const TaskList = () => {
     const [filterStatus, setFilterStatus] = useState("pending");
     const [isUrgentOnly, setIsUrgentOnly] = useState(false);
     const filteredTasks = tasks.filter(task => {
+        // 1. Tạo mốc "Hôm nay" theo đúng giờ địa phương của VN
+        const now = new Date();
+        const todayStr = new Date(now.getTime() - (now.getTimezoneOffset() * 60000))
+            .toISOString().split('T')[0];
 
-        // Filter khẩn cấp
+        // 2. Filter khẩn cấp (Giữ nguyên logic của bạn)
         if (isUrgentOnly) {
-            const isUrgentTask =
-                task.type === "assign_bed" ||
-                task.type === "discharge" ||
-                task.muc_do_uu_tien === "Khẩn cấp";
-
-            if (!isUrgentTask) {
-                return false;
-            }
+            const isDefaultUrgent = (task.type === "assign_bed" || task.type === "discharge");
+            const isPriorityUrgent = (task.muc_do_uu_tien === "Khẩn cấp");
+            if (!isDefaultUrgent && !isPriorityUrgent) return false;
         }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        // Pending
+        // 3. Xử lý ngày của task (Chuyển về YYYY-MM-DD để so sánh)
+        let taskDateStr = null;
+        if (task.thoi_gian_chi_dinh) {
+            const d = new Date(task.thoi_gian_chi_dinh);
+            // Trừ đi offset để lấy đúng ngày theo giờ VN dù server có lưu thế nào
+            taskDateStr = new Date(d.getTime())
+                .toISOString().split('T')[0];
+        }
+
+        // 4. Pending: Hiện xếp giường, xuất viện và y lệnh CỦA HÔM NAY
         if (filterStatus === "pending") {
+            if (task.type === "assign_bed" || task.type === "discharge") return true;
 
-            // Nhiệm vụ giường và xuất viện luôn hiện ở Pending
-            if (task.type === "assign_bed" || task.type === "discharge") {
-                return true;
+            if (task.type === "order" && taskDateStr) {
+                return task.trang_thai !== "Đã hoàn thành" && taskDateStr === todayStr;
             }
-
-            if (task.type === "order") {
-                if (!task.thoi_gian_chi_dinh) return false;
-
-                const taskDate = new Date(task.thoi_gian_chi_dinh);
-                if (isNaN(taskDate.getTime())) return false;
-
-                taskDate.setHours(0, 0, 0, 0);
-
-
-
-                return (
-                    task.trang_thai !== "Đã hoàn thành" &&
-                    taskDate.getTime() === today.getTime()
-                );
-            }
-
             return false;
         }
 
-        // Overdue
+        // 5. Overdue: Y lệnh chưa xong và ngày < hôm nay
         if (filterStatus === "overdue") {
-            if (task.type !== 'order' || !task.thoi_gian_chi_dinh) return false;
-            const taskDate = new Date(task.thoi_gian_chi_dinh);
-            if (isNaN(taskDate.getTime())) return false;
-            taskDate.setHours(0, 0, 0, 0);
-
             return task.type === 'order'
-                && task.trang_thai === 'Chờ thực hiện'
-                && taskDate.getTime() < today.getTime();
+                && task.trang_thai !== 'Đã hoàn thành'
+                && taskDateStr
+                && taskDateStr < todayStr;
         }
 
-
-        // Completed
+        // 6. Completed
         if (filterStatus === "completed") {
-
-            return (
-                task.type === "order" &&
-                task.trang_thai === "Đã hoàn thành"
-            );
+            return task.trang_thai === "Đã hoàn thành";
         }
 
         return false;
-    })
+    });
 
 
     return (

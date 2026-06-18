@@ -24,7 +24,21 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
         nhom_mau: '',
         cap_do: ''
     });
+    const validateAdmissionForm = (data) => {
+        const bhytRegex = /^[A-Z]{2}[1-5]\d{2}\d{10}$/;
 
+        // Kiểm tra từng trường và trả về thông báo lỗi đầu tiên gặp phải
+        if (!data.ho_ten || data.ho_ten.trim().length < 6) return "Họ tên phải có ít nhất 3 ký tự.";
+        if (!bhytRegex.test(data.so_bhyt)) return "Mã BHYT không đúng định dạng. Cấu trúc: 2 chữ cái + 1 số mức hưởng (1-5) + 2 số mã tỉnh + 10 số BHXH.";
+        if (!/^0\d{9,10}$/.test(data.so_dien_thoai)) return "Số điện thoại không hợp lệ (10-11 số, bắt đầu bằng 0).";
+        if (!data.ly_do || data.ly_do.trim().length < 10) return "Vui lòng mô tả triệu chứng chi tiết hơn (tối thiểu 10 ký tự).";
+        if (!data.chan_doan || data.chan_doan.trim().length < 5) return "Chẩn đoán quá ngắn.";
+        if (!data.y_ta_id) return "Vui lòng chọn điều dưỡng phụ trách.";
+        if (!data.nhom_mau) return "Vui lòng chọn nhóm máu.";
+        if (!data.cap_do) return "Vui lòng chọn cấp độ chăm sóc.";
+
+        return null; // Không có lỗi
+    };
     useEffect(() => {
         const fetchNursesByDept = async () => {
             if (!formData.khoa_id) {
@@ -52,7 +66,11 @@ const Admission = ({ isOpen, onClose, onRefresh }) => {
 
     const handleConfirm = async (e) => {
         e.preventDefault();
-
+        const errorMessage = validateAdmissionForm(formData);
+        if (errorMessage) {
+            alert(errorMessage);
+            return;
+        }
         const dataToSend = {
             ...formData,
 
